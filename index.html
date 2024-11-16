@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Fangky AI</title>
     <link rel="icon" href="death.png" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
       :root {
         --bg-color: #ffffff;
@@ -18,6 +15,8 @@
         --hover-color: #f0f0f0;
         --ai-message-bg: #f7f7f8;
         --user-message-bg: #ffffff;
+        --shadow-color: rgba(0, 0, 0, 0.1);
+        --typing-color: #10a37f;
       }
 
       [data-theme="dark"] {
@@ -28,6 +27,7 @@
         --hover-color: #2d2d2d;
         --ai-message-bg: #444654;
         --user-message-bg: #343541;
+        --shadow-color: rgba(255, 255, 255, 0.1);
       }
 
       * {
@@ -43,6 +43,7 @@
         color: var(--text-color);
         transition: background-color 0.3s, color 0.3s;
         line-height: 1.5;
+        overflow: hidden;
       }
 
       .container {
@@ -57,6 +58,8 @@
         padding: 1rem;
         display: flex;
         flex-direction: column;
+        transition: transform 0.3s ease-in-out;
+        z-index: 1000;
       }
 
       .new-chat-btn {
@@ -67,7 +70,7 @@
         border-radius: 0.375rem;
         cursor: pointer;
         margin-bottom: 1rem;
-        transition: background-color 0.3s;
+        transition: all 0.3s;
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -76,6 +79,8 @@
 
       .new-chat-btn:hover {
         background-color: var(--hover-color);
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px var(--shadow-color);
       }
 
       .settings {
@@ -88,7 +93,7 @@
         background: none;
         border: none;
         color: var(--text-color);
-        padding: 0.5rem;
+        padding: 0.75rem;
         width: 100%;
         text-align: left;
         cursor: pointer;
@@ -96,10 +101,12 @@
         align-items: center;
         gap: 0.5rem;
         border-radius: 0.375rem;
+        transition: all 0.3s;
       }
 
       .settings-btn:hover {
         background-color: var(--hover-color);
+        transform: translateX(2px);
       }
 
       .main-content {
@@ -107,6 +114,7 @@
         display: flex;
         flex-direction: column;
         background-color: var(--chat-bg);
+        position: relative;
       }
 
       .chat-container {
@@ -114,6 +122,21 @@
         overflow-y: auto;
         padding: 1rem;
         scroll-behavior: smooth;
+        scrollbar-width: thin;
+        scrollbar-color: var(--border-color) transparent;
+      }
+
+      .chat-container::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .chat-container::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .chat-container::-webkit-scrollbar-thumb {
+        background-color: var(--border-color);
+        border-radius: 3px;
       }
 
       .message {
@@ -122,6 +145,20 @@
         gap: 1rem;
         border-bottom: 1px solid var(--border-color);
         animation: fadeIn 0.3s ease-in-out;
+        position: relative;
+      }
+
+      .message:hover {
+        background-color: var(--hover-color);
+      }
+
+      .message .timestamp {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        font-size: 0.75rem;
+        color: var(--text-color);
+        opacity: 0.6;
       }
 
       @keyframes fadeIn {
@@ -149,6 +186,11 @@
         border-radius: 0.375rem;
         overflow: hidden;
         flex-shrink: 0;
+        transition: transform 0.3s;
+      }
+
+      .message:hover .avatar {
+        transform: scale(1.05);
       }
 
       .avatar img {
@@ -161,12 +203,44 @@
         flex-grow: 1;
         word-wrap: break-word;
         overflow-wrap: break-word;
+        font-size: 0.95rem;
+        line-height: 1.6;
+      }
+
+      .typing-indicator {
+        display: flex;
+        gap: 0.5rem;
+        padding: 1rem;
+        align-items: center;
+      }
+
+      .typing-dots {
+        display: flex;
+        gap: 0.25rem;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        background-color: var(--typing-color);
+        border-radius: 50%;
+        animation: typing 1.4s infinite ease-in-out;
+      }
+
+      .dot:nth-child(1) { animation-delay: 0s; }
+      .dot:nth-child(2) { animation-delay: 0.2s; }
+      .dot:nth-child(3) { animation-delay: 0.4s; }
+
+      @keyframes typing {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.5); }
       }
 
       .input-container {
         padding: 1rem;
         background-color: var(--bg-color);
         border-top: 1px solid var(--border-color);
+        position: relative;
       }
 
       .input-box {
@@ -174,10 +248,17 @@
         gap: 0.5rem;
         background-color: var(--chat-bg);
         border: 1px solid var(--border-color);
-        border-radius: 0.375rem;
+        border-radius: 0.75rem;
         padding: 0.75rem;
         max-width: 768px;
         margin: 0 auto;
+        transition: all 0.3s;
+        box-shadow: 0 2px 4px var(--shadow-color);
+      }
+
+      .input-box:focus-within {
+        border-color: var(--typing-color);
+        box-shadow: 0 4px 8px var(--shadow-color);
       }
 
       textarea {
@@ -192,6 +273,7 @@
         min-height: 24px;
         max-height: 200px;
         outline: none;
+        line-height: 1.5;
       }
 
       .action-buttons {
@@ -205,70 +287,25 @@
         border: none;
         color: var(--text-color);
         cursor: pointer;
-        padding: 0.25rem;
+        padding: 0.5rem;
         font-size: 1.25rem;
-        transition: color 0.3s;
+        transition: all 0.3s;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 32px;
-        height: 32px;
-        border-radius: 0.25rem;
+        width: 40px;
+        height: 40px;
+        border-radius: 0.5rem;
       }
 
       .action-btn:hover {
         background-color: var(--hover-color);
+        transform: translateY(-1px);
       }
 
-      .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        justify-content: center;
-        align-items: center;
-        z-index: 1000;
-      }
-
-      .modal-content {
-        background-color: var(--bg-color);
-        padding: 2rem;
-        border-radius: 0.5rem;
-        width: 90%;
-        max-width: 500px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-
-      .modal h2 {
-        margin-bottom: 1rem;
-      }
-
-      .modal input {
-        width: 100%;
-        padding: 0.5rem;
-        margin: 0.5rem 0;
-        border: 1px solid var(--border-color);
-        border-radius: 0.25rem;
-        background-color: var(--chat-bg);
-        color: var(--text-color);
-      }
-
-      .modal button {
-        padding: 0.5rem 1rem;
-        margin-top: 1rem;
-        border: none;
-        border-radius: 0.25rem;
-        background-color: #10a37f;
-        color: white;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
-
-      .modal button:hover {
-        background-color: #0d8a6c;
+      .action-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
       }
 
       .mobile-menu-btn {
@@ -277,13 +314,19 @@
         top: 1rem;
         left: 1rem;
         z-index: 1000;
-        background: none;
-        border: none;
+        background: var(--bg-color);
+        border: 1px solid var(--border-color);
         color: var(--text-color);
-        font-size: 1.5rem;
+        font-size: 1.25rem;
         cursor: pointer;
         padding: 0.5rem;
         border-radius: 0.375rem;
+        box-shadow: 0 2px 4px var(--shadow-color);
+        transition: all 0.3s;
+      }
+
+      .mobile-menu-btn:hover {
+        background-color: var(--hover-color);
       }
 
       @media (max-width: 768px) {
@@ -292,12 +335,13 @@
           left: -260px;
           top: 0;
           height: 100%;
-          z-index: 999;
-          transition: left 0.3s ease-in-out;
+          background-color: var(--bg-color);
+          box-shadow: 2px 0 8px var(--shadow-color);
         }
 
         .sidebar.active {
           left: 0;
+          transform: translateX(0);
         }
 
         .mobile-menu-btn {
@@ -305,8 +349,62 @@
         }
 
         .input-box {
-          margin: 0 1rem;
+          margin: 0 0.5rem;
         }
+
+        .message {
+          padding: 1rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .input-box {
+          margin: 0;
+        }
+
+        .action-btn {
+          width: 36px;
+          height: 36px;
+          font-size: 1.1rem;
+        }
+
+        .avatar {
+          width: 32px;
+          height: 32px;
+        }
+      }
+
+      .real-time-status {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--bg-color);
+        padding: 0.5rem 1rem;
+        border-radius: 1rem;
+        box-shadow: 0 2px 8px var(--shadow-color);
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        z-index: 100;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .real-time-status.active {
+        opacity: 1;
+      }
+
+      .status-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #10a37f;
+      }
+
+      .status-indicator.offline {
+        background-color: #dc2626;
       }
     </style>
   </head>
@@ -336,6 +434,11 @@
       <div class="main-content">
         <div class="chat-container" id="chatContainer"></div>
 
+        <div class="real-time-status">
+          <div class="status-indicator"></div>
+          <span class="status-text">Connected</span>
+        </div>
+
         <div class="input-container">
           <div class="input-box">
             <textarea
@@ -344,10 +447,10 @@
               oninput="autoResize(this)"
             ></textarea>
             <div class="action-buttons">
-              <button class="action-btn" onclick="attachFile()">
+              <button class="action-btn" onclick="attachFile()" title="Attach file">
                 <i class="fas fa-paperclip"></i>
               </button>
-              <button class="action-btn" onclick="sendMessage()">
+              <button class="action-btn" onclick="sendMessage()" title="Send message">
                 <i class="fas fa-paper-plane"></i>
               </button>
             </div>
@@ -357,204 +460,273 @@
     </div>
 
     <script>
-      const PRIVATE_API_KEY = "AIzaSyBJE6IqXU1oDBBhnvNbnrpHZIvwfrS08Ms";
-
-      let config = {
-        aiAvatar: "death.png",
-        theme: "light",
-      };
-
-      function loadConfig() {
-        const savedConfig = localStorage.getItem("chatConfig");
-        if (savedConfig) {
-          const loadedConfig = JSON.parse(savedConfig);
-          config.aiAvatar = loadedConfig.aiAvatar;
-          config.theme = loadedConfig.theme;
-          document.documentElement.setAttribute("data-theme", config.theme);
-        }
-      }
-
-      function saveConfig() {
-        localStorage.setItem(
-          "chatConfig",
-          JSON.stringify({
-            aiAvatar: config.aiAvatar,
-            theme: config.theme,
-          })
-        );
-      }
-
-      function newChat() {
-        document.getElementById("chatContainer").innerHTML = "";
-      }
-
-      function toggleTheme() {
-        config.theme = config.theme === "light" ? "dark" : "light";
-        document.documentElement.setAttribute("data-theme", config.theme);
-        saveConfig();
-      }
-
-      function openSettings() {
-        const modal = document.getElementById("settingsModal");
-        modal.style.display = "flex";
-        document.getElementById("aiAvatar").value = config.aiAvatar;
-      }
-
-      function saveSettings() {
-        config.aiAvatar = document.getElementById("aiAvatar").value;
-        saveConfig();
-        document.getElementById("settingsModal").style.display = "none";
-      }
-
-      function autoResize(textarea) {
-        textarea.style.height = "auto";
-        textarea.style.height = textarea.scrollHeight + "px";
-      }
-
-      function attachFile() {
-        const input = document.createElement("input");
-        input.type = "file";
-        input.accept = "image/*,.pdf,.doc,.docx";
-        input.onchange = function (e) {
-          const file = e.target.files[0];
-          if (file) {
-            console.log("File selected:", file.name);
-          }
+        const PRIVATE_API_KEY = "AIzaSyBJE6IqXU1oDBBhnvNbnrpHZIvwfrS08Ms";
+        let isConnected = true;
+        let typingTimeout;
+        let isTyping = false;
+  
+        let config = {
+          aiAvatar: "death.png",
+          theme: "light",
         };
-        input.click();
-      }
-
-      async function sendMessage() {
-        const textarea = document.querySelector("textarea");
-        const message = textarea.value.trim();
-
-        if (!message) return;
-
-        addMessage(message, "user");
-        textarea.value = "";
-        textarea.style.height = "auto";
-
-        const typingIndicator = addMessage("Thinking...", "ai");
-
-        try {
-          const response = await getGeminiResponse(message);
-          typingIndicator.remove();
-          addMessage(response, "ai");
-        } catch (error) {
-          console.error("Error:", error);
-          typingIndicator.remove();
-          addMessage("Sorry, I encountered an error. Please try again.", "ai");
-        }
-      }
-
-      async function getGeminiResponse(message) {
-        const apiUrl =
-          "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
-
-        try {
-          const response = await fetch(`${apiUrl}?key=${PRIVATE_API_KEY}`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              contents: [
-                {
-                  parts: [
-                    {
-                      text: message,
-                    },
-                  ],
-                },
-              ],
-            }),
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+  
+        function loadConfig() {
+          const savedConfig = localStorage.getItem("chatConfig");
+          if (savedConfig) {
+            const loadedConfig = JSON.parse(savedConfig);
+            config.aiAvatar = loadedConfig.aiAvatar;
+            config.theme = loadedConfig.theme;
+            document.documentElement.setAttribute("data-theme", config.theme);
           }
-
-          const data = await response.json();
-
-          const generatedText = data.candidates[0].content.parts[0].text;
-          return generatedText;
-        } catch (error) {
-          console.error("Error calling Gemini API:", error);
-          throw error;
         }
-      }
-
-      function addMessage(content, type) {
-        const chatContainer = document.getElementById("chatContainer");
-        const messageDiv = document.createElement("div");
-        messageDiv.className = `message ${type}`;
-
-        const avatar = document.createElement("div");
-        avatar.className = "avatar";
-        const img = document.createElement("img");
-        img.src = type === "ai" ? config.aiAvatar : "user.png";
-        avatar.appendChild(img);
-
-        const messageContent = document.createElement("div");
-        messageContent.className = "message-content";
-        messageContent.textContent = content;
-
-        messageDiv.appendChild(avatar);
-        messageDiv.appendChild(messageContent);
-        chatContainer.appendChild(messageDiv);
-
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-
-        return messageDiv;
-      }
-
-      document.querySelector("textarea").addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-          e.preventDefault();
-          sendMessage();
+  
+        function saveConfig() {
+          localStorage.setItem(
+            "chatConfig",
+            JSON.stringify({
+              aiAvatar: config.aiAvatar,
+              theme: config.theme,
+            })
+          );
         }
-      });
-
-      document
-        .querySelector(".mobile-menu-btn")
-        .addEventListener("click", () => {
+  
+        function updateConnectionStatus(connected) {
+          isConnected = connected;
+          const status = document.querySelector('.real-time-status');
+          const indicator = status.querySelector('.status-indicator');
+          const text = status.querySelector('.status-text');
+  
+          status.classList.add('active');
+          if (connected) {
+            indicator.classList.remove('offline');
+            text.textContent = 'Connected';
+          } else {
+            indicator.classList.add('offline');
+            text.textContent = 'Disconnected';
+          }
+  
+          setTimeout(() => {
+            status.classList.remove('active');
+          }, 3000);
+        }
+  
+        function newChat() {
+          document.getElementById("chatContainer").innerHTML = "";
+          addMessage("Hello! How can I help you today?", "ai");
+        }
+  
+        function toggleTheme() {
+          config.theme = config.theme === "light" ? "dark" : "light";
+          document.documentElement.setAttribute("data-theme", config.theme);
+          saveConfig();
+        }
+  
+        function openSettings() {
+          // Implementation for settings modal
+          console.log("Settings opened");
+        }
+  
+        function autoResize(textarea) {
+          textarea.style.height = "auto";
+          const maxHeight = 200;
+          const scrollHeight = textarea.scrollHeight;
+          textarea.style.height = Math.min(scrollHeight, maxHeight) + "px";
+          
+          if (scrollHeight > maxHeight) {
+            textarea.style.overflowY = "auto";
+          } else {
+            textarea.style.overflowY = "hidden";
+          }
+        }
+  
+        function attachFile() {
+          const input = document.createElement("input");
+          input.type = "file";
+          input.accept = "image/*,.pdf,.doc,.docx";
+          input.onchange = function (e) {
+            const file = e.target.files[0];
+            if (file) {
+              handleFileUpload(file);
+            }
+          };
+          input.click();
+        }
+  
+        function handleFileUpload(file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            const fileMessage = `Attached file: ${file.name}`;
+            addMessage(fileMessage, "user");
+          };
+          reader.readAsDataURL(file);
+        }
+  
+        function addTypingIndicator() {
+          const typingDiv = document.createElement("div");
+          typingDiv.className = "message ai typing-indicator";
+          typingDiv.innerHTML = `
+            <div class="avatar">
+              <img src="${config.aiAvatar}" alt="AI Avatar" />
+            </div>
+            <div class="typing-dots">
+              <div class="dot"></div>
+              <div class="dot"></div>
+              <div class="dot"></div>
+            </div>
+          `;
+          document.getElementById("chatContainer").appendChild(typingDiv);
+          return typingDiv;
+        }
+  
+        function removeTypingIndicator() {
+          const typingIndicator = document.querySelector(".typing-indicator");
+          if (typingIndicator) {
+            typingIndicator.remove();
+          }
+        }
+  
+        async function sendMessage() {
+          const textarea = document.querySelector("textarea");
+          const message = textarea.value.trim();
+  
+          if (!message || !isConnected) return;
+  
+          textarea.value = "";
+          textarea.style.height = "auto";
+          autoResize(textarea);
+  
+          addMessage(message, "user");
+          const typingIndicator = addTypingIndicator();
+  
+          try {
+            const response = await getGeminiResponse(message);
+            removeTypingIndicator();
+            addMessage(response, "ai");
+          } catch (error) {
+            console.error("Error:", error);
+            removeTypingIndicator();
+            addMessage("Sorry, I encountered an error. Please try again.", "ai");
+            updateConnectionStatus(false);
+          }
+        }
+  
+        async function getGeminiResponse(message) {
+          const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
+  
+          try {
+            const response = await fetch(`${apiUrl}?key=${PRIVATE_API_KEY}`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                contents: [
+                  {
+                    parts: [
+                      {
+                        text: message,
+                      },
+                    ],
+                  },
+                ],
+              }),
+            });
+  
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+  
+            const data = await response.json();
+            updateConnectionStatus(true);
+            return data.candidates[0].content.parts[0].text;
+          } catch (error) {
+            console.error("Error calling Gemini API:", error);
+            throw error;
+          }
+        }
+  
+        function addMessage(content, type) {
+          const chatContainer = document.getElementById("chatContainer");
+          const messageDiv = document.createElement("div");
+          messageDiv.className = `message ${type}`;
+  
+          const timestamp = new Date().toLocaleTimeString();
+          
+          messageDiv.innerHTML = `
+            <div class="avatar">
+              <img src="${type === 'ai' ? config.aiAvatar : 'user.png'}" alt="${type} avatar" />
+            </div>
+            <div class="message-content">${content}</div>
+            <div class="timestamp">${timestamp}</div>
+          `;
+  
+          chatContainer.appendChild(messageDiv);
+          chatContainer.scrollTop = chatContainer.scrollHeight;
+  
+          return messageDiv;
+        }
+  
+        // Event Listeners
+        document.querySelector("textarea").addEventListener("keydown", (e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+          }
+        });
+  
+        document.querySelector("textarea").addEventListener("input", (e) => {
+          if (!isTyping) {
+            isTyping = true;
+            updateConnectionStatus(true);
+          }
+          
+          clearTimeout(typingTimeout);
+          typingTimeout = setTimeout(() => {
+            isTyping = false;
+          }, 1000);
+        });
+  
+        document.querySelector(".mobile-menu-btn").addEventListener("click", () => {
           document.querySelector(".sidebar").classList.toggle("active");
         });
-
-      document
-        .getElementById("settingsModal")
-        .addEventListener("click", (e) => {
-          if (e.target === e.currentTarget) {
-            e.target.style.display = "none";
+  
+        document.querySelector(".new-chat-btn").addEventListener("click", newChat);
+  
+        // Handle clicks outside sidebar on mobile
+        window.addEventListener("click", (e) => {
+          const sidebar = document.querySelector(".sidebar");
+          const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
+  
+          if (
+            sidebar.classList.contains("active") &&
+            !sidebar.contains(e.target) &&
+            !mobileMenuBtn.contains(e.target)
+          ) {
+            sidebar.classList.remove("active");
           }
         });
-
-      document
-        .querySelector(".new-chat-btn")
-        .addEventListener("click", newChat);
-
-      function initializeApp() {
-        loadConfig();
-
-        addMessage("Hello! How can I help you today?", "ai");
-
-        document.querySelector("textarea").focus();
-      }
-
-      document.addEventListener("DOMContentLoaded", initializeApp);
-
-      window.addEventListener("click", (e) => {
-        const sidebar = document.querySelector(".sidebar");
-        const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
-
-        if (
-          sidebar.classList.contains("active") &&
-          !sidebar.contains(e.target) &&
-          !mobileMenuBtn.contains(e.target)
-        ) {
-          sidebar.classList.remove("active");
+  
+        // Check connection status periodically
+        setInterval(() => {
+          fetch('https://www.google.com/favicon.ico', {
+            mode: 'no-cors',
+          })
+          .then(() => {
+            if (!isConnected) updateConnectionStatus(true);
+          })
+          .catch(() => {
+            updateConnectionStatus(false);
+          });
+        }, 30000);
+  
+        // Initialize the app
+        function initializeApp() {
+          loadConfig();
+          addMessage("Hello! How can I help you today?", "ai");
+          document.querySelector("textarea").focus();
         }
-      });
-    </script>
-  </body>
-</html>
+  
+        document.addEventListener("DOMContentLoaded", initializeApp);
+      </script>
+    </body>
+  </html>
