@@ -7,7 +7,7 @@
     <link rel="icon" href="death.png" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
- :root {
+      :root {
         --bg-color: #ffffff;
         --text-color: #333333;
         --chat-bg: #f7f7f8;
@@ -47,7 +47,6 @@
         overflow: hidden;
       }
 
-      /* Navbar Styles */
       .navbar {
         position: fixed;
         top: 0;
@@ -79,7 +78,6 @@
         display: none;
       }
 
-      /* Container adjusted for navbar */
       .container {
         display: flex;
         height: calc(100vh - var(--navbar-height));
@@ -94,6 +92,7 @@
         display: flex;
         flex-direction: column;
         z-index: 999;
+        transition: transform 0.3s ease-in-out;
       }
 
       .new-chat-btn {
@@ -196,6 +195,15 @@
         max-width: calc(100% - 60px);
       }
 
+      .timestamp {
+        position: absolute;
+        right: 1rem;
+        top: 0.5rem;
+        font-size: 0.75rem;
+        color: var(--text-color);
+        opacity: 0.6;
+      }
+
       .input-container {
         padding: 1rem;
         background-color: var(--bg-color);
@@ -245,7 +253,67 @@
         justify-content: center;
       }
 
-      /* Mobile Responsive Styles */
+      .typing-dots {
+        display: flex;
+        gap: 0.25rem;
+        padding: 0.5rem;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        background-color: var(--typing-color);
+        border-radius: 50%;
+        animation: typing 1s infinite ease-in-out;
+      }
+
+      .dot:nth-child(1) { animation-delay: 0s; }
+      .dot:nth-child(2) { animation-delay: 0.2s; }
+      .dot:nth-child(3) { animation-delay: 0.4s; }
+
+      @keyframes typing {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-5px); }
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .real-time-status {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: var(--bg-color);
+        padding: 0.5rem 1rem;
+        border-radius: 1rem;
+        box-shadow: 0 2px 8px var(--shadow-color);
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        z-index: 100;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .real-time-status.active {
+        opacity: 1;
+      }
+
+      .status-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #10a37f;
+      }
+
+      .status-indicator.offline {
+        background-color: #dc2626;
+      }
+
       @media (max-width: 768px) {
         .mobile-menu-btn {
           display: block;
@@ -253,14 +321,13 @@
 
         .sidebar {
           position: fixed;
-          left: -260px;
+          transform: translateX(-100%);
           top: var(--navbar-height);
           height: calc(100% - var(--navbar-height));
-          transition: left 0.3s ease-in-out;
         }
 
         .sidebar.active {
-          left: 0;
+          transform: translateX(0);
         }
 
         .input-box {
@@ -297,102 +364,22 @@
         .action-btn {
           font-size: 1.1rem;
         }
-      }
 
-      /* Status indicator styles remain the same */
-      .real-time-status {
-        position: fixed;
-        bottom: 80px;
-        left: 50%;
-        transform: translateX(-50%);
-        background-color: var(--bg-color);
-        padding: 0.5rem 1rem;
-        border-radius: 1rem;
-        box-shadow: 0 2px 8px var(--shadow-color);
-        font-size: 0.875rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        z-index: 100;
-        opacity: 0;
-        transition: opacity 0.3s;
-      }
-
-      .real-time-status.active {
-        opacity: 1;
-      }
-
-      .status-indicator {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background-color: #10a37f;
-      }
-
-      .status-indicator.offline {
-        background-color: #dc2626;
+        .timestamp {
+          font-size: 0.7rem;
+        }
       }
     </style>
   </head>
   <body>
     <nav class="navbar">
-        <button class="mobile-menu-btn">
-          <i class="fas fa-bars"></i>
-        </button>
-        <div class="navbar-brand">F⚔NGKY AI</div>
-      </nav>
-  
-      <div class="container">
-        <div class="sidebar">
-          <button class="new-chat-btn">
-            <i class="fas fa-plus"></i>
-            New Chat
-          </button>
-          <div class="settings">
-            <button class="settings-btn" onclick="toggleTheme()">
-              <i class="fas fa-moon"></i>
-              Toggle Theme
-            </button>
-            <button class="settings-btn" onclick="openSettings()">
-              <i class="fas fa-cog"></i>
-              Settings
-            </button>
-          </div>
-        </div>
-  
-        <div class="main-content">
-          <div class="chat-container" id="chatContainer"></div>
-  
-          <div class="real-time-status">
-            <div class="status-indicator"></div>
-            <span class="status-text">Connected</span>
-          </div>
-  
-          <div class="input-container">
-            <div class="input-box">
-              <textarea
-                placeholder="Type your message..."
-                rows="1"
-                oninput="autoResize(this)"
-              ></textarea>
-              <div class="action-buttons">
-                <button class="action-btn" onclick="attachFile()" title="Attach file">
-                  <i class="fas fa-paperclip"></i>
-                </button>
-                <button class="action-btn" onclick="sendMessage()" title="Send message">
-                  <i class="fas fa-paper-plane"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    <div class="container">
       <button class="mobile-menu-btn">
         <i class="fas fa-bars"></i>
       </button>
+      <div class="navbar-brand">F⚔NGKY AI</div>
+    </nav>
 
+    <div class="container">
       <div class="sidebar">
         <button class="new-chat-btn">
           <i class="fas fa-plus"></i>
@@ -439,273 +426,274 @@
     </div>
 
     <script>
-        const PRIVATE_API_KEY = "AIzaSyBJE6IqXU1oDBBhnvNbnrpHZIvwfrS08Ms";
-        let isConnected = true;
-        let typingTimeout;
-        let isTyping = false;
-  
-        let config = {
-          aiAvatar: "death.png",
-          theme: "light",
-        };
-  
-        function loadConfig() {
-          const savedConfig = localStorage.getItem("chatConfig");
-          if (savedConfig) {
-            const loadedConfig = JSON.parse(savedConfig);
-            config.aiAvatar = loadedConfig.aiAvatar;
-            config.theme = loadedConfig.theme;
-            document.documentElement.setAttribute("data-theme", config.theme);
-          }
-        }
-  
-        function saveConfig() {
-          localStorage.setItem(
-            "chatConfig",
-            JSON.stringify({
-              aiAvatar: config.aiAvatar,
-              theme: config.theme,
-            })
-          );
-        }
-  
-        function updateConnectionStatus(connected) {
-          isConnected = connected;
-          const status = document.querySelector('.real-time-status');
-          const indicator = status.querySelector('.status-indicator');
-          const text = status.querySelector('.status-text');
-  
-          status.classList.add('active');
-          if (connected) {
-            indicator.classList.remove('offline');
-            text.textContent = 'Connected';
-          } else {
-            indicator.classList.add('offline');
-            text.textContent = 'Disconnected';
-          }
-  
-          setTimeout(() => {
-            status.classList.remove('active');
-          }, 3000);
-        }
-  
-        function newChat() {
-          document.getElementById("chatContainer").innerHTML = "";
-          addMessage("Hello! How can I help you today?", "ai");
-        }
-  
-        function toggleTheme() {
-          config.theme = config.theme === "light" ? "dark" : "light";
+      const PRIVATE_API_KEY = "AIzaSyBJE6IqXU1oDBBhnvNbnrpHZIvwfrS08Ms"; // Replace with your actual API key
+      let isConnected = true;
+      let typingTimeout;
+      let isTyping = false;
+
+      let config = {
+        aiAvatar: "death.png",
+        theme: "light",
+      };
+
+      function loadConfig() {
+        const savedConfig = localStorage.getItem("chatConfig");
+        if (savedConfig) {
+          const loadedConfig = JSON.parse(savedConfig);
+          config.aiAvatar = loadedConfig.aiAvatar;
+          config.theme = loadedConfig.theme;
           document.documentElement.setAttribute("data-theme", config.theme);
-          saveConfig();
         }
-  
-        function openSettings() {
-          // Implementation for settings modal
-          console.log("Settings opened");
-        }
-  
-        function autoResize(textarea) {
-          textarea.style.height = "auto";
-          const maxHeight = 200;
-          const scrollHeight = textarea.scrollHeight;
-          textarea.style.height = Math.min(scrollHeight, maxHeight) + "px";
-          
-          if (scrollHeight > maxHeight) {
-            textarea.style.overflowY = "auto";
-          } else {
-            textarea.style.overflowY = "hidden";
-          }
-        }
-  
-        function attachFile() {
-          const input = document.createElement("input");
-          input.type = "file";
-          input.accept = "image/*,.pdf,.doc,.docx";
-          input.onchange = function (e) {
-            const file = e.target.files[0];
-            if (file) {
-              handleFileUpload(file);
-            }
-          };
-          input.click();
-        }
-  
-        function handleFileUpload(file) {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-            const fileMessage = `Attached file: ${file.name}`;
-            addMessage(fileMessage, "user");
-          };
-          reader.readAsDataURL(file);
-        }
-  
-        function addTypingIndicator() {
-          const typingDiv = document.createElement("div");
-          typingDiv.className = "message ai typing-indicator";
-          typingDiv.innerHTML = `
-            <div class="avatar">
-              <img src="${config.aiAvatar}" alt="AI Avatar" />
-            </div>
-            <div class="typing-dots">
-              <div class="dot"></div>
-              <div class="dot"></div>
-              <div class="dot"></div>
-            </div>
-          `;
-          document.getElementById("chatContainer").appendChild(typingDiv);
-          return typingDiv;
-        }
-  
-        function removeTypingIndicator() {
-          const typingIndicator = document.querySelector(".typing-indicator");
-          if (typingIndicator) {
-            typingIndicator.remove();
-          }
-        }
-  
-        async function sendMessage() {
-          const textarea = document.querySelector("textarea");
-          const message = textarea.value.trim();
-  
-          if (!message || !isConnected) return;
-  
-          textarea.value = "";
-          textarea.style.height = "auto";
-          autoResize(textarea);
-  
-          addMessage(message, "user");
-          const typingIndicator = addTypingIndicator();
-  
-          try {
-            const response = await getGeminiResponse(message);
-            removeTypingIndicator();
-            addMessage(response, "ai");
-          } catch (error) {
-            console.error("Error:", error);
-            removeTypingIndicator();
-            addMessage("Sorry, I encountered an error. Please try again.", "ai");
-            updateConnectionStatus(false);
-          }
-        }
-  
-        async function getGeminiResponse(message) {
-          const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
-  
-          try {
-            const response = await fetch(`${apiUrl}?key=${PRIVATE_API_KEY}`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                contents: [
-                  {
-                    parts: [
-                      {
-                        text: message,
-                      },
-                    ],
-                  },
-                ],
-              }),
-            });
-  
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`);
-            }
-  
-            const data = await response.json();
-            updateConnectionStatus(true);
-            return data.candidates[0].content.parts[0].text;
-          } catch (error) {
-            console.error("Error calling Gemini API:", error);
-            throw error;
-          }
-        }
-  
-        function addMessage(content, type) {
-          const chatContainer = document.getElementById("chatContainer");
-          const messageDiv = document.createElement("div");
-          messageDiv.className = `message ${type}`;
-  
-          const timestamp = new Date().toLocaleTimeString();
-          
-          messageDiv.innerHTML = `
-            <div class="avatar">
-              <img src="${type === 'ai' ? config.aiAvatar : 'user.png'}" alt="${type} avatar" />
-            </div>
-            <div class="message-content">${content}</div>
-            <div class="timestamp">${timestamp}</div>
-          `;
-  
-          chatContainer.appendChild(messageDiv);
-          chatContainer.scrollTop = chatContainer.scrollHeight;
-  
-          return messageDiv;
-        }
-  
-        // Event Listeners
-        document.querySelector("textarea").addEventListener("keydown", (e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-          }
-        });
-  
-        document.querySelector("textarea").addEventListener("input", (e) => {
-          if (!isTyping) {
-            isTyping = true;
-            updateConnectionStatus(true);
-          }
-          
-          clearTimeout(typingTimeout);
-          typingTimeout = setTimeout(() => {
-            isTyping = false;
-          }, 1000);
-        });
-  
-        document.querySelector(".mobile-menu-btn").addEventListener("click", () => {
-          document.querySelector(".sidebar").classList.toggle("active");
-        });
-  
-        document.querySelector(".new-chat-btn").addEventListener("click", newChat);
-  
-        // Handle clicks outside sidebar on mobile
-        window.addEventListener("click", (e) => {
-          const sidebar = document.querySelector(".sidebar");
-          const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
-  
-          if (
-            sidebar.classList.contains("active") &&
-            !sidebar.contains(e.target) &&
-            !mobileMenuBtn.contains(e.target)
-          ) {
-            sidebar.classList.remove("active");
-          }
-        });
-  
-        // Check connection status periodically
-        setInterval(() => {
-          fetch('https://www.google.com/favicon.ico', {
-            mode: 'no-cors',
+      }
+
+      function saveConfig() {
+        localStorage.setItem(
+          "chatConfig",
+          JSON.stringify({
+            aiAvatar: config.aiAvatar,
+            theme: config.theme,
           })
-          .then(() => {
-            if (!isConnected) updateConnectionStatus(true);
-          })
-          .catch(() => {
-            updateConnectionStatus(false);
+        );
+      }
+
+      function updateConnectionStatus(connected) {
+        isConnected = connected;
+        const status = document.querySelector('.real-time-status');
+        const indicator = status.querySelector('.status-indicator');
+        const text = status.querySelector('.status-text');
+
+        status.classList.add('active');
+        if (connected) {
+          indicator.classList.remove('offline');
+          text.textContent = 'Connected';
+        } else {
+          indicator.classList.add('offline');
+          text.textContent = 'Disconnected';
+        }
+
+        setTimeout(() => {
+          status.classList.remove('active');
+        }, 3000);
+      }
+
+      function newChat() {
+        document.getElementById("chatContainer").innerHTML = "";
+        addMessage("Hello! How can I help you today?", "ai");
+      }
+
+      function toggleTheme() {
+        config.theme = config.theme === "light" ? "dark" : "light";
+        document.documentElement.setAttribute("data-theme", config.theme);
+        saveConfig();
+      }
+
+      function openSettings() {
+        // Implementation for settings modal
+        console.log("Settings opened");
+      }
+
+      function autoResize(textarea) {
+        textarea.style.height = "auto";
+        const maxHeight = 200;
+        const scrollHeight = textarea.scrollHeight;
+        textarea.style.height = Math.min(scrollHeight, maxHeight) + "px";
+        
+        if (scrollHeight > maxHeight) {
+          textarea.style.overflowY = "auto";
+        } else {
+          textarea.style.overflowY = "hidden";
+        }
+      }
+
+      function attachFile() {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*,.pdf,.doc,.docx";
+        input.onchange = function (e) {
+          const file = e.target.files[0];
+          if (file) {
+            handleFileUpload(file);
+          }
+        };
+        input.click();
+      }
+
+      function handleFileUpload(file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const fileMessage = `Attached file: ${file.name}`;
+          addMessage(fileMessage, "user");
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function addTypingIndicator() {
+        const typingDiv = document.createElement("div");
+        typingDiv.className = "message ai typing-indicator";
+        typingDiv.innerHTML = `
+          <div class="avatar">
+            <img src="${config.aiAvatar}" alt="AI Avatar" />
+          </div>
+          <div class="typing-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+        `;
+        document.getElementById("chatContainer").appendChild(typingDiv);
+        return typingDiv;
+      }
+
+      function removeTypingIndicator() {
+        const typingIndicator = document.querySelector(".typing-indicator");
+        if (typingIndicator) {
+          typingIndicator.remove();
+        }
+      }
+
+      async function sendMessage() {
+        const textarea = document.querySelector("textarea");
+        const message = textarea.value.trim();
+
+        if (!message || !isConnected) return;
+
+        textarea.value = "";
+        textarea.style.height = "auto";
+        autoResize(textarea);
+
+        addMessage(message, "user");
+        const typingIndicator = addTypingIndicator();
+
+        try {
+          const response = await getGeminiResponse(message);
+          removeTypingIndicator();
+          addMessage(response, "ai");
+        } catch (error) {
+          console.error("Error:", error);
+          removeTypingIndicator();
+          addMessage("Sorry, I encountered an error. Please try again.", "ai");
+          updateConnectionStatus(false);
+        }
+      }
+
+      async function getGeminiResponse(message) {
+        const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
+
+        try {
+          const response = await fetch(`${apiUrl}?key=${PRIVATE_API_KEY}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              contents: [
+                {
+                  parts: [
+                    {
+                      text: message,
+                    },
+                  ],
+                },
+              ],
+            }),
           });
-        }, 30000);
-  
-        // Initialize the app
-        function initializeApp() {
-          loadConfig();
-          addMessage("Hello! How can I help you today?", "ai");
-          document.querySelector("textarea").focus();
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          updateConnectionStatus(true);
+          return data.candidates[0].content.parts[0].text;
+        } catch (error) {
+          console.error("Error calling Gemini API:", error);
+          throw error;
         }
-  
-        document.addEventListener("DOMContentLoaded", initializeApp);
+      }
+
+      function addMessage(content, type) {
+        const chatContainer = document.getElementById("chatContainer");
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message ${type}`;
+
+        const timestamp = new Date().toLocaleTimeString();
+        
+        messageDiv.innerHTML = `
+          <div class="avatar">
+            <img src="${type === 'ai' ? config.aiAvatar : 'user.png'}" alt="${type} avatar" />
+          </div>
+          <div class="message-content">${content}</div>
+          <div class="timestamp">${timestamp}</div>
+        `;
+
+        chatContainer.appendChild(messageDiv);
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+
+        return messageDiv;
+      }
+
+      // Event Listeners
+      document.querySelector("textarea").addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+
+      document.querySelector("textarea").addEventListener("input", (e) => {
+        if (!isTyping) {
+          isTyping = true;
+          updateConnectionStatus(true);
+        }
+        
+        clearTimeout(typingTimeout);
+        typingTimeout = setTimeout(() => {
+          isTyping = false;
+        }, 1000);
+      });
+
+      document.querySelector(".mobile-menu-btn").addEventListener("click", () => {
+        document.querySelector(".sidebar").classList.toggle("active");
+      });
+
+      document.querySelector(".new-chat-btn").addEventListener("click", newChat);
+
+      // Handle clicks outside sidebar on mobile
+      document.addEventListener("click", (e) => {
+        const sidebar = document.querySelector(".sidebar");
+        const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
+
+        if (
+          sidebar.classList.contains("active") &&
+          !sidebar.contains(e.target) &&
+          !mobileMenuBtn.contains(e.target)
+        ) {
+          sidebar.classList.remove("active");
+        }
+      });
+
+      // Check connection status periodically
+      setInterval(() => {
+        fetch('https://www.google.com/favicon.ico', {
+          mode: 'no-cors',
+        })
+        .then(() => {
+          if (!isConnected) updateConnectionStatus(true);
+        })
+        .catch(() => {
+          updateConnectionStatus(false);
+        });
+      }, 30000);
+
+      // Initialize the app
+      function initializeApp() {
+        loadConfig();
+        addMessage("Hello! How can I help you today?", "ai");
+        document.querySelector("textarea").focus();
+      }
+
+      // Start the app when the DOM is fully loaded
+      document.addEventListener("DOMContentLoaded", initializeApp);
       </script>
-    </body>
-  </html>
+  </body>
+</html>
