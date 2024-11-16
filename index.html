@@ -10,6 +10,7 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <style>
+/* Root Variables */
 :root {
   --bg-color: #ffffff;
   --text-color: #333333;
@@ -21,9 +22,11 @@
   --shadow-color: rgba(0, 0, 0, 0.1);
   --typing-color: #10a37f;
   --navbar-height: 60px;
+  --footer-height: 40px;
   --input-height: auto;
 }
 
+/* Dark Theme */
 [data-theme="dark"] {
   --bg-color: #202123;
   --text-color: #ffffff;
@@ -35,6 +38,7 @@
   --shadow-color: rgba(255, 255, 255, 0.1);
 }
 
+/* Base Styles */
 * {
   margin: 0;
   padding: 0;
@@ -95,10 +99,10 @@ body {
   z-index: 1001;
 }
 
-/* Main Container */
+/* Container and Main Content */
 .container {
-  padding-top: var(--navbar-height);
-  height: calc(100vh - var(--navbar-height));
+  margin-top: var(--navbar-height);
+  height: calc(100vh - var(--navbar-height) - var(--footer-height));
   display: flex;
   overflow: hidden;
   position: relative;
@@ -114,6 +118,7 @@ body {
   flex-direction: column;
   flex-shrink: 0;
   z-index: 999;
+  height: 100%;
 }
 
 .new-chat-btn {
@@ -166,8 +171,8 @@ body {
   flex-direction: column;
   background-color: var(--chat-bg);
   min-width: 0;
-  position: relative;
   height: 100%;
+  position: relative;
 }
 
 .chat-container {
@@ -177,9 +182,7 @@ body {
   scroll-behavior: smooth;
   scrollbar-width: thin;
   scrollbar-color: var(--border-color) transparent;
-  margin-top: 0;
-  position: relative;
-  z-index: 1;
+  padding-bottom: calc(var(--input-height) + 2rem);
 }
 
 /* Message Styles */
@@ -225,11 +228,14 @@ body {
 
 /* Input Container */
 .input-container {
-  padding: 0.75rem;
+  position: fixed;
+  bottom: var(--footer-height);
+  left: 0;
+  right: 0;
   background-color: var(--bg-color);
   border-top: 1px solid var(--border-color);
-  position: relative;
-  z-index: 3;
+  padding: 0.75rem;
+  z-index: 100;
 }
 
 .input-box {
@@ -276,29 +282,43 @@ textarea {
   justify-content: center;
 }
 
-/* Typing Indicator */
-.typing-dots {
+/* Footer Styles */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: var(--footer-height);
+  background-color: var(--bg-color);
+  border-top: 1px solid var(--border-color);
   display: flex;
-  gap: 0.25rem;
-  padding: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  color: var(--text-color);
+  z-index: 1000;
 }
 
-.dot {
-  width: 8px;
-  height: 8px;
-  background-color: var(--typing-color);
-  border-radius: 50%;
-  animation: typing 1s infinite ease-in-out;
+.footer-links {
+  display: flex;
+  gap: 1rem;
 }
 
-.dot:nth-child(1) { animation-delay: 0s; }
-.dot:nth-child(2) { animation-delay: 0.2s; }
-.dot:nth-child(3) { animation-delay: 0.4s; }
+.footer-links a {
+  color: var(--text-color);
+  text-decoration: none;
+  transition: opacity 0.3s;
+}
+
+.footer-links a:hover {
+  opacity: 0.8;
+}
 
 /* Real-time Status */
 .real-time-status {
   position: fixed;
-  bottom: 80px;
+  bottom: calc(var(--footer-height) + 80px);
   left: 50%;
   transform: translateX(-50%);
   background-color: var(--bg-color);
@@ -329,6 +349,25 @@ textarea {
   background-color: #dc2626;
 }
 
+/* Typing Indicator */
+.typing-dots {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.5rem;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--typing-color);
+  border-radius: 50%;
+  animation: typing 1s infinite ease-in-out;
+}
+
+.dot:nth-child(1) { animation-delay: 0s; }
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+
 /* Animations */
 @keyframes typing {
   0%, 100% { transform: translateY(0); }
@@ -350,6 +389,7 @@ textarea {
 @media (max-width: 768px) {
   :root {
     --navbar-height: 56px;
+    --footer-height: 36px;
   }
 
   .navbar {
@@ -361,7 +401,6 @@ textarea {
   }
 
   .mobile-menu-btn {
-    display: block;
     width: 36px;
     height: 36px;
   }
@@ -371,7 +410,6 @@ textarea {
     transform: translateX(-100%);
     top: var(--navbar-height);
     height: calc(100vh - var(--navbar-height));
-    z-index: 1000;
     transition: transform 0.3s ease-in-out;
   }
 
@@ -379,17 +417,10 @@ textarea {
     transform: translateX(0);
   }
 
-  .main-content {
-    width: 100%;
-  }
-
-  .container {
-    padding-top: var(--navbar-height);
-    height: calc(100vh - var(--navbar-height));
-  }
-
   .chat-container {
     padding: 0.75rem;
+    padding-top: 1rem;
+    padding-bottom: calc(var(--input-height) + 1.5rem);
   }
 
   .input-container {
@@ -406,7 +437,6 @@ textarea {
 
   .message {
     padding: 0.75rem;
-    margin-top: 0;
   }
 
   .message-content {
@@ -417,99 +447,116 @@ textarea {
     width: 32px;
     height: 32px;
   }
-}
 
-/* Small Screen Adjustments */
-@media (max-width: 480px) {
-  .navbar {
+  .footer {
     padding: 0 0.5rem;
+    font-size: 0.75rem;
   }
 
-  .navbar-brand {
-    font-size: 1rem;
+  .footer-links {
+    gap: 0.75rem;
   }
-
-  .mobile-menu-btn {
-    width: 32px;
-    height: 32px;
-    font-size: 1.1rem;
-  }
-
-  .message {
-    padding: 0.5rem;
-  }
-
-  .input-container {
-    padding: 0.5rem;
-  }
-
-  .input-box {
-    padding: 0.5rem;
-  }
-
-  .action-btn {
-    font-size: 1.1rem;
-    padding: 0.25rem;
+}
+textarea {
+    max-height: 80px;
+    min-height: 24px;
   }
 }
 
-/* Extra Small Screen Adjustments */
-@media (max-width: 320px) {
-  :root {
-    --navbar-height: 50px;
-  }
-
-  .navbar-brand {
-    font-size: 0.9rem;
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
-/* Handle notched phones */
-@supports (padding-top: env(safe-area-inset-top)) {
-  .navbar {
-    padding-top: env(safe-area-inset-top);
-    height: calc(var(--navbar-height) + env(safe-area-inset-top));
+/* Screen Reader Only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus Styles */
+:focus-visible {
+  outline: 2px solid var(--typing-color);
+  outline-offset: 2px;
+}
+
+/* Scrollbar Styles */
+.chat-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 3px;
+}
+
+/* Error States */
+.error-message {
+  background-color: #fee2e2;
+  border: 1px solid #ef4444;
+  color: #991b1b;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  margin: 0.5rem 0;
+  font-size: 0.875rem;
+}
+
+[data-theme="dark"] .error-message {
+  background-color: #7f1d1d;
+  border-color: #ef4444;
+  color: #fecaca;
+}
+
+/* Loading States */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Selection Styles */
+::selection {
+  background-color: var(--typing-color);
+  color: white;
+}
+
+/* Print Styles */
+@media print {
+  .navbar,
+  .sidebar,
+  .input-container,
+  .footer {
+    display: none;
   }
 
   .container {
-    padding-top: calc(var(--navbar-height) + env(safe-area-inset-top));
-    height: calc(100vh - var(--navbar-height) - env(safe-area-inset-top));
+    margin: 0;
+    height: auto;
   }
 
-  .sidebar {
-    top: calc(var(--navbar-height) + env(safe-area-inset-top));
-    height: calc(100vh - var(--navbar-height) - env(safe-area-inset-top));
-  }
-}
-
-/* Handle different height screens */
-@media (max-height: 600px) {
-  .navbar {
-    height: 45px;
+  .chat-container {
+    overflow: visible;
+    height: auto;
   }
 
-  .input-container {
-    padding: 0.25rem;
-  }
-
-  textarea {
-    max-height: 80px;
-  }
-}
-
-/* Handle landscape orientation */
-@media (max-height: 480px) and (orientation: landscape) {
-  .navbar {
-    height: 40px;
-  }
-
-  .navbar-brand {
-    font-size: 0.9rem;
-  }
-
-  .mobile-menu-btn {
-    width: 32px;
-    height: 32px;
+  .message {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 }
     </style>
@@ -575,7 +622,15 @@ textarea {
         </div>
       </div>
     </div>
-
+    <!-- Add Footer -->
+    <footer class="footer">
+        <div class="footer-links">
+          <a href="#" onclick="openPrivacyPolicy()">Privacy Policy</a>
+          <a href="#" onclick="openTerms()">Terms of Service</a>
+          <a href="#" onclick="openAbout()">About</a>
+          <span>© 2024 Fangky AI</span>
+        </div>
+      </footer>
     <script>
       const PRIVATE_API_KEY = "AIzaSyBJE6IqXU1oDBBhnvNbnrpHZIvwfrS08Ms";
       let isConnected = true;
@@ -863,6 +918,35 @@ textarea {
 
       // Start the app when the DOM is fully loaded
       document.addEventListener("DOMContentLoaded", initializeApp);
+          // Add these new functions for footer links
+          function openPrivacyPolicy() {
+        console.log("Privacy Policy opened");
+        // Implement privacy policy modal or navigation
+      }
+
+      function openTerms() {
+        console.log("Terms of Service opened");
+        // Implement terms modal or navigation
+      }
+
+      function openAbout() {
+        console.log("About opened");
+        // Implement about modal or navigation
+      }
+
+      // Update the initializeApp function
+      function initializeApp() {
+        loadConfig();
+        
+        // Add a slight delay to ensure proper rendering after DOM is ready
+        setTimeout(() => {
+          const chatContainer = document.getElementById("chatContainer");
+          chatContainer.style.paddingTop = "1rem";
+          addMessage("Hello! How can I help you today?", "ai");
+        }, 100);
+        
+        document.querySelector("textarea").focus();
+      }
     </script>
   </body>
 </html>
