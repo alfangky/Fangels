@@ -7,7 +7,7 @@
     <link rel="icon" href="death.png" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
-      :root {
+ :root {
         --bg-color: #ffffff;
         --text-color: #333333;
         --chat-bg: #f7f7f8;
@@ -17,6 +17,7 @@
         --user-message-bg: #ffffff;
         --shadow-color: rgba(0, 0, 0, 0.1);
         --typing-color: #10a37f;
+        --navbar-height: 60px;
       }
 
       [data-theme="dark"] {
@@ -46,9 +47,43 @@
         overflow: hidden;
       }
 
+      /* Navbar Styles */
+      .navbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: var(--navbar-height);
+        background-color: var(--bg-color);
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1rem;
+        z-index: 1000;
+      }
+
+      .navbar-brand {
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-right: 1rem;
+      }
+
+      .mobile-menu-btn {
+        background: none;
+        border: none;
+        color: var(--text-color);
+        font-size: 1.25rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        display: none;
+      }
+
+      /* Container adjusted for navbar */
       .container {
         display: flex;
-        height: 100vh;
+        height: calc(100vh - var(--navbar-height));
+        margin-top: var(--navbar-height);
       }
 
       .sidebar {
@@ -58,8 +93,7 @@
         padding: 1rem;
         display: flex;
         flex-direction: column;
-        transition: transform 0.3s ease-in-out;
-        z-index: 1000;
+        z-index: 999;
       }
 
       .new-chat-btn {
@@ -79,8 +113,6 @@
 
       .new-chat-btn:hover {
         background-color: var(--hover-color);
-        transform: translateY(-1px);
-        box-shadow: 0 2px 4px var(--shadow-color);
       }
 
       .settings {
@@ -101,12 +133,10 @@
         align-items: center;
         gap: 0.5rem;
         border-radius: 0.375rem;
-        transition: all 0.3s;
       }
 
       .settings-btn:hover {
         background-color: var(--hover-color);
-        transform: translateX(2px);
       }
 
       .main-content {
@@ -115,6 +145,7 @@
         flex-direction: column;
         background-color: var(--chat-bg);
         position: relative;
+        height: 100%;
       }
 
       .chat-container {
@@ -126,50 +157,13 @@
         scrollbar-color: var(--border-color) transparent;
       }
 
-      .chat-container::-webkit-scrollbar {
-        width: 6px;
-      }
-
-      .chat-container::-webkit-scrollbar-track {
-        background: transparent;
-      }
-
-      .chat-container::-webkit-scrollbar-thumb {
-        background-color: var(--border-color);
-        border-radius: 3px;
-      }
-
       .message {
         display: flex;
-        padding: 1.5rem;
+        padding: 1rem;
         gap: 1rem;
         border-bottom: 1px solid var(--border-color);
         animation: fadeIn 0.3s ease-in-out;
         position: relative;
-      }
-
-      .message:hover {
-        background-color: var(--hover-color);
-      }
-
-      .message .timestamp {
-        position: absolute;
-        top: 0.5rem;
-        right: 0.5rem;
-        font-size: 0.75rem;
-        color: var(--text-color);
-        opacity: 0.6;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
       }
 
       .message.ai {
@@ -184,19 +178,14 @@
         width: 40px;
         height: 40px;
         border-radius: 0.375rem;
-        overflow: hidden;
         flex-shrink: 0;
-        transition: transform 0.3s;
-      }
-
-      .message:hover .avatar {
-        transform: scale(1.05);
       }
 
       .avatar img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        border-radius: 0.375rem;
       }
 
       .message-content {
@@ -204,43 +193,13 @@
         word-wrap: break-word;
         overflow-wrap: break-word;
         font-size: 0.95rem;
-        line-height: 1.6;
-      }
-
-      .typing-indicator {
-        display: flex;
-        gap: 0.5rem;
-        padding: 1rem;
-        align-items: center;
-      }
-
-      .typing-dots {
-        display: flex;
-        gap: 0.25rem;
-      }
-
-      .dot {
-        width: 8px;
-        height: 8px;
-        background-color: var(--typing-color);
-        border-radius: 50%;
-        animation: typing 1.4s infinite ease-in-out;
-      }
-
-      .dot:nth-child(1) { animation-delay: 0s; }
-      .dot:nth-child(2) { animation-delay: 0.2s; }
-      .dot:nth-child(3) { animation-delay: 0.4s; }
-
-      @keyframes typing {
-        0%, 100% { transform: scale(1); }
-        50% { transform: scale(1.5); }
+        max-width: calc(100% - 60px);
       }
 
       .input-container {
         padding: 1rem;
         background-color: var(--bg-color);
         border-top: 1px solid var(--border-color);
-        position: relative;
       }
 
       .input-box {
@@ -250,15 +209,8 @@
         border: 1px solid var(--border-color);
         border-radius: 0.75rem;
         padding: 0.75rem;
-        max-width: 768px;
         margin: 0 auto;
-        transition: all 0.3s;
-        box-shadow: 0 2px 4px var(--shadow-color);
-      }
-
-      .input-box:focus-within {
-        border-color: var(--typing-color);
-        box-shadow: 0 4px 8px var(--shadow-color);
+        max-width: 768px;
       }
 
       textarea {
@@ -266,14 +218,13 @@
         border: none;
         background: none;
         resize: none;
-        padding: 0;
         color: var(--text-color);
         font-family: inherit;
         font-size: 1rem;
         min-height: 24px;
         max-height: 200px;
         outline: none;
-        line-height: 1.5;
+        padding: 0;
       }
 
       .action-buttons {
@@ -289,82 +240,44 @@
         cursor: pointer;
         padding: 0.5rem;
         font-size: 1.25rem;
-        transition: all 0.3s;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 40px;
-        height: 40px;
-        border-radius: 0.5rem;
       }
 
-      .action-btn:hover {
-        background-color: var(--hover-color);
-        transform: translateY(-1px);
-      }
-
-      .action-btn:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-
-      .mobile-menu-btn {
-        display: none;
-        position: fixed;
-        top: 1rem;
-        left: 1rem;
-        z-index: 1000;
-        background: var(--bg-color);
-        border: 1px solid var(--border-color);
-        color: var(--text-color);
-        font-size: 1.25rem;
-        cursor: pointer;
-        padding: 0.5rem;
-        border-radius: 0.375rem;
-        box-shadow: 0 2px 4px var(--shadow-color);
-        transition: all 0.3s;
-      }
-
-      .mobile-menu-btn:hover {
-        background-color: var(--hover-color);
-      }
-
+      /* Mobile Responsive Styles */
       @media (max-width: 768px) {
-        .sidebar {
-          position: fixed;
-          left: -260px;
-          top: 0;
-          height: 100%;
-          background-color: var(--bg-color);
-          box-shadow: 2px 0 8px var(--shadow-color);
-        }
-
-        .sidebar.active {
-          left: 0;
-          transform: translateX(0);
-        }
-
         .mobile-menu-btn {
           display: block;
         }
 
-        .input-box {
-          margin: 0 0.5rem;
+        .sidebar {
+          position: fixed;
+          left: -260px;
+          top: var(--navbar-height);
+          height: calc(100% - var(--navbar-height));
+          transition: left 0.3s ease-in-out;
         }
 
-        .message {
-          padding: 1rem;
+        .sidebar.active {
+          left: 0;
         }
-      }
 
-      @media (max-width: 480px) {
         .input-box {
           margin: 0;
         }
 
-        .action-btn {
-          width: 36px;
-          height: 36px;
+        .message {
+          padding: 0.75rem;
+        }
+
+        .message-content {
+          font-size: 0.9rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .navbar-brand {
           font-size: 1.1rem;
         }
 
@@ -372,8 +285,21 @@
           width: 32px;
           height: 32px;
         }
+
+        .message {
+          padding: 0.5rem;
+        }
+
+        .input-container {
+          padding: 0.75rem;
+        }
+
+        .action-btn {
+          font-size: 1.1rem;
+        }
       }
 
+      /* Status indicator styles remain the same */
       .real-time-status {
         position: fixed;
         bottom: 80px;
@@ -409,6 +335,59 @@
     </style>
   </head>
   <body>
+    <nav class="navbar">
+        <button class="mobile-menu-btn">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="navbar-brand">F⚔NGKY AI</div>
+      </nav>
+  
+      <div class="container">
+        <div class="sidebar">
+          <button class="new-chat-btn">
+            <i class="fas fa-plus"></i>
+            New Chat
+          </button>
+          <div class="settings">
+            <button class="settings-btn" onclick="toggleTheme()">
+              <i class="fas fa-moon"></i>
+              Toggle Theme
+            </button>
+            <button class="settings-btn" onclick="openSettings()">
+              <i class="fas fa-cog"></i>
+              Settings
+            </button>
+          </div>
+        </div>
+  
+        <div class="main-content">
+          <div class="chat-container" id="chatContainer"></div>
+  
+          <div class="real-time-status">
+            <div class="status-indicator"></div>
+            <span class="status-text">Connected</span>
+          </div>
+  
+          <div class="input-container">
+            <div class="input-box">
+              <textarea
+                placeholder="Type your message..."
+                rows="1"
+                oninput="autoResize(this)"
+              ></textarea>
+              <div class="action-buttons">
+                <button class="action-btn" onclick="attachFile()" title="Attach file">
+                  <i class="fas fa-paperclip"></i>
+                </button>
+                <button class="action-btn" onclick="sendMessage()" title="Send message">
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     <div class="container">
       <button class="mobile-menu-btn">
         <i class="fas fa-bars"></i>
