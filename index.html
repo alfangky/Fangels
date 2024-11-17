@@ -19,22 +19,27 @@
         --bg-color: #f0f2f5;
         --white-tone: #fafafa;
         --sidebar-width: 280px;
-        --header-height: 64px;
+        --header-height: 56px;
         --border-color: #e0e3e9;
         --text-primary: #1a1a1a;
         --text-secondary: #666;
         --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
         --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
         --transition: all 0.3s ease;
+        --safe-bottom: env(safe-area-inset-bottom, 0px);
       }
 
       body {
         background: var(--bg-color);
         height: 100vh;
+        height: -webkit-fill-available;
         overflow: hidden;
         color: var(--text-primary);
+        position: fixed;
+        width: 100%;
       }
 
+      /* Improved Sidebar */
       .sidebar {
         position: fixed;
         left: 0;
@@ -47,20 +52,24 @@
         flex-direction: column;
         transition: var(--transition);
         box-shadow: var(--shadow-sm);
+        z-index: 1000;
       }
 
       .sidebar-header {
-        padding: 20px;
+        padding: 0 16px;
         height: var(--header-height);
         border-bottom: 1px solid var(--border-color);
         display: flex;
         align-items: center;
         justify-content: space-between;
         background: white;
+        position: sticky;
+        top: 0;
+        z-index: 2;
       }
 
       .logo {
-        font-size: 26px;
+        font-size: 22px;
         font-weight: bold;
         color: var(--primary-color);
         letter-spacing: -0.5px;
@@ -139,20 +148,24 @@
       .main-content {
         margin-left: var(--sidebar-width);
         height: 100vh;
+        height: -webkit-fill-available;
         display: flex;
         flex-direction: column;
         background: var(--white-tone);
+        position: relative;
       }
 
       .chat-header {
         height: var(--header-height);
-        padding: 0 24px;
+        padding: 0 16px;
         border-bottom: 1px solid var(--border-color);
         display: flex;
         align-items: center;
         justify-content: space-between;
         background: white;
-        box-shadow: var(--shadow-sm);
+        position: sticky;
+        top: 0;
+        z-index: 2;
       }
 
       .menu-toggle {
@@ -168,25 +181,28 @@
       .chat-container {
         flex: 1;
         overflow-y: auto;
-        padding: 24px;
+        -webkit-overflow-scrolling: touch;
+        padding: 16px;
         scroll-behavior: smooth;
+        position: relative;
       }
 
       .message {
         max-width: 850px;
-        margin: 24px auto;
-        padding: 16px 20px;
+        margin: 16px auto;
+        padding: 12px 16px;
         border-radius: 12px;
         background: white;
         box-shadow: var(--shadow-sm);
         animation: messageIn 0.3s ease;
         display: flex;
-        gap: 16px;
+        gap: 12px;
+        width: 100%;
       }
 
       .message .avatar {
-        width: 38px;
-        height: 38px;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         flex-shrink: 0;
         display: flex;
@@ -203,6 +219,10 @@
       .message .content {
         flex: 1;
         line-height: 1.5;
+        font-size: 15px;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        word-break: break-word;
       }
 
       .message.user {
@@ -242,11 +262,17 @@
         border: 1px solid var(--border-color);
       }
 
+      /* Improved Input Area */
       .input-container {
-        padding: 20px;
+        padding: 12px 16px;
+        padding-bottom: calc(12px + var(--safe-bottom));
         background: white;
         border-top: 1px solid var(--border-color);
-        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 2;
       }
 
       .input-box {
@@ -254,50 +280,121 @@
         margin: 0 auto;
         position: relative;
         background: var(--white-tone);
-        border-radius: 12px;
+        border-radius: 10px;
         box-shadow: var(--shadow-sm);
-        transition: var(--transition);
-      }
-
-      .input-box:focus-within {
-        box-shadow: var(--shadow-md);
       }
 
       textarea {
         width: 100%;
-        padding: 16px;
-        padding-right: 50px;
+        padding: 12px;
+        padding-right: 44px;
         border: 1px solid var(--border-color);
         border-radius: 12px;
         resize: none;
-        min-height: 56px;
-        max-height: 200px;
-        font-size: 14px;
+        min-height: 44px;
+        max-height: 160px;
+        font-size: 15px;
         line-height: 1.5;
         background: var(--white-tone);
         transition: var(--transition);
       }
 
-      textarea:focus {
-        outline: none;
-        border-color: var(--primary-color);
-      }
-
       .send-button {
         position: absolute;
-        right: 12px;
-        bottom: 12px;
+        right: 8px;
+        bottom: 8px;
         background: var(--primary-color);
         border: none;
         color: white;
-        width: 32px;
-        height: 32px;
-        border-radius: 8px;
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
         transition: var(--transition);
+      }
+      /* Mobile Optimizations */
+      @media (max-width: 768px) {
+        :root {
+          --header-height: 48px;
+        }
+
+        body {
+          font-size: 15px;
+        }
+
+        .sidebar {
+          transform: translateX(-100%);
+          width: 85%;
+          max-width: 320px;
+        }
+
+        .sidebar.active {
+          transform: translateX(0);
+        }
+
+        .main-content {
+          margin-left: 0;
+          width: 100%;
+        }
+
+        .chat-container {
+          padding: 12px;
+        }
+
+        .message {
+          margin: 12px auto;
+          padding: 10px 12px;
+        }
+
+        .message .avatar {
+          width: 28px;
+          height: 28px;
+        }
+
+        .message .content {
+          font-size: 14px;
+        }
+
+        .input-container {
+          padding: 8px 12px;
+          padding-bottom: calc(8px + var(--safe-bottom));
+        }
+
+        textarea {
+          font-size: 14px;
+          padding: 10px;
+          padding-right: 40px;
+          min-height: 40px;
+        }
+
+        .send-button {
+          width: 24px;
+          height: 24px;
+        }
+
+        /* Improved mobile overlay */
+        .sidebar-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 999;
+        }
+
+        .sidebar-overlay.active {
+          display: block;
+        }
+
+        /* Safe area adjustments */
+        .input-container {
+          padding-bottom: calc(8px + env(safe-area-inset-bottom));
+        }
       }
 
       .send-button:hover {
@@ -397,10 +494,24 @@
         }
       }
       .code-block {
-        background: #f6f8fa;
-        border-radius: 6px;
-        margin: 1em 0;
+        margin: 0.5em 0;
+        border-radius: 8px;
         overflow: hidden;
+        background: #f6f8fa;
+        font-size: 14px;
+      }
+
+      .code-block pre {
+        margin: 0;
+        padding: 12px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .message .content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
       }
 
       .code-header {
@@ -463,6 +574,42 @@
       h5,
       h6 {
         margin: 1em 0 0.5em 0;
+      }
+      /* Improved scrollbars */
+      .chat-container::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .chat-container::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .chat-container::-webkit-scrollbar-thumb {
+        background: #ddd;
+        border-radius: 3px;
+      }
+
+      /* Additional mobile improvements */
+      @media (max-width: 480px) {
+        .message {
+          margin: 8px auto;
+        }
+
+        .code-block {
+          font-size: 13px;
+        }
+
+        .empty-state {
+          padding: 16px;
+        }
+
+        .empty-state h2 {
+          font-size: 20px;
+        }
+
+        .empty-state p {
+          font-size: 14px;
+        }
       }
     </style>
   </head>
