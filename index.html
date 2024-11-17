@@ -23,6 +23,10 @@
   --typing-color: #10a37f;
   --navbar-height: 60px;
   --input-height: 60px;
+  --dot-size: 8px;
+  --primary-color: #10a37f;
+  --secondary-color: #0d8a6f;
+  --animation-duration: 0.3s;
 }
 
 /* Dark Theme */
@@ -42,6 +46,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -55,6 +60,73 @@ body {
   height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+/* Enhanced Typing Animation */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  background: var(--ai-message-bg);
+  border-radius: 12px;
+  width: fit-content;
+  margin-top: 4px;
+}
+
+.typing-dot {
+  width: var(--dot-size);
+  height: var(--dot-size);
+  border-radius: 50%;
+  background-color: var(--typing-color);
+  opacity: 0.6;
+  transform-origin: center bottom;
+}
+
+@keyframes typingAnimation {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+.typing-dot:nth-child(1) { animation: typingAnimation 1s infinite 0s; }
+.typing-dot:nth-child(2) { animation: typingAnimation 1s infinite 0.2s; }
+.typing-dot:nth-child(3) { animation: typingAnimation 1s infinite 0.4s; }
+
+/* Message Animation */
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message {
+  animation: messageSlideIn 0.3s ease-out forwards;
+  display: flex;
+  padding: 1rem;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  position: relative;
+  z-index: 2;
+  transition: background-color var(--animation-duration) ease;
+}
+
+.message.ai {
+  background-color: var(--ai-message-bg);
+}
+
+.message.user {
+  background-color: var(--user-message-bg);
 }
 
 /* Navbar Styles */
@@ -71,12 +143,14 @@ body {
   justify-content: space-between;
   padding: 0 1.5rem;
   z-index: 1000;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px var(--shadow-color);
+  transition: background-color var(--animation-duration) ease;
 }
 
 .navbar-brand {
   font-size: 1.25rem;
   font-weight: bold;
+  user-select: none;
 }
 
 .theme-toggle {
@@ -89,9 +163,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  touch-action: manipulation;
+  transition: transform var(--animation-duration) ease;
 }
 
-/* Container and Main Content */
+.theme-toggle:hover {
+  transform: scale(1.1);
+}
+
+/* Container and Layout */
 .container {
   margin-top: var(--navbar-height);
   height: calc(100vh - var(--navbar-height));
@@ -100,7 +180,6 @@ body {
   position: relative;
 }
 
-/* Main Content */
 .main-content {
   flex: 1;
   display: flex;
@@ -110,6 +189,7 @@ body {
   height: 100%;
   position: relative;
   padding-bottom: var(--input-height);
+  transition: background-color var(--animation-duration) ease;
 }
 
 .chat-container {
@@ -118,34 +198,24 @@ body {
   padding: 1rem;
   padding-bottom: 120px;
   scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
   scrollbar-width: thin;
   scrollbar-color: var(--border-color) transparent;
 }
 
-/* Message Styles */
-.message {
-  display: flex;
-  padding: 1rem;
-  gap: 1rem;
-  border-bottom: 1px solid var(--border-color);
-  animation: fadeIn 0.3s ease-in-out;
-  position: relative;
-  z-index: 2;
-}
-
-.message.ai {
-  background-color: var(--ai-message-bg);
-}
-
-.message.user {
-  background-color: var(--user-message-bg);
-}
-
+/* Avatar and Message Content */
 .avatar {
   width: 36px;
   height: 36px;
   border-radius: 0.375rem;
   flex-shrink: 0;
+  overflow: hidden;
+  transition: transform var(--animation-duration) ease;
+}
+
+.avatar:hover {
+  transform: scale(1.05);
 }
 
 .avatar img {
@@ -161,9 +231,10 @@ body {
   overflow-wrap: break-word;
   font-size: 0.95rem;
   min-width: 0;
+  line-height: 1.6;
 }
 
-/* Input Container Styles */
+/* Input Area */
 .input-container {
   position: fixed;
   bottom: 0;
@@ -173,6 +244,7 @@ body {
   border-top: 1px solid var(--border-color);
   padding: 0.75rem;
   z-index: 100;
+  transition: background-color var(--animation-duration) ease;
 }
 
 .input-box {
@@ -184,6 +256,11 @@ body {
   padding: 0.75rem;
   margin: 0 auto;
   max-width: 768px;
+  transition: border-color var(--animation-duration) ease;
+}
+
+.input-box:focus-within {
+  border-color: var(--border-color);
 }
 
 textarea {
@@ -196,11 +273,19 @@ textarea {
   font-size: 1rem;
   min-height: 24px;
   max-height: 120px;
-  outline: none !important;
+  outline: none;
   padding: 0;
   line-height: 1.5;
+  -webkit-appearance: none;
+  transition: color var(--animation-duration) ease;
 }
 
+textarea::placeholder {
+  color: var(--text-color);
+  opacity: 0.6;
+}
+
+/* Action Buttons */
 .action-buttons {
   display: flex;
   gap: 0.5rem;
@@ -217,47 +302,26 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
+  touch-action: manipulation;
+  transition: transform var(--animation-duration) ease, color var(--animation-duration) ease;
+  border-radius: 0.375rem;
 }
 
-/* Real-time Status */
-.real-time-status {
-  position: fixed;
-  bottom: calc(var(--input-height) + 20px);
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: var(--bg-color);
-  padding: 0.5rem 1rem;
-  border-radius: 1rem;
-  box-shadow: 0 2px 8px var(--shadow-color);
-  font-size: 0.875rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  z-index: 100;
-  opacity: 0;
-  transition: opacity 0.3s;
+.action-btn:hover {
+  color: var(--primary-color);
+  transform: scale(1.1);
 }
 
-.real-time-status.active {
-  opacity: 1;
+.action-btn:active {
+  transform: scale(0.95);
 }
 
-.status-indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #10a37f;
-}
-
-.status-indicator.offline {
-  background-color: #dc2626;
-}
-
-/* Responsive Design */
+/* Mobile Responsiveness */
 @media (max-width: 768px) {
   :root {
     --navbar-height: 56px;
     --input-height: 50px;
+    --dot-size: 6px;
   }
 
   .navbar {
@@ -279,10 +343,12 @@ textarea {
 
   .input-box {
     margin: 0;
+    padding: 0.6rem;
   }
 
   textarea {
     font-size: 16px;
+    padding: 0;
   }
 
   .message {
@@ -297,6 +363,54 @@ textarea {
     width: 32px;
     height: 32px;
   }
+
+  .action-btn {
+    padding: 0.4rem;
+  }
+
+  .typing-indicator {
+    padding: 6px;
+  }
+}
+
+/* iOS Specific Fixes */
+@supports (-webkit-touch-callout: none) {
+  textarea,
+  input {
+    font-size: 16px !important;
+  }
+
+  .input-box {
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* Scrollbar Styling */
+.chat-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-container::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 3px;
+}
+
+/* Focus Styles */
+button:focus-visible,
+textarea:focus-visible {
+  outline: none;
+}
+
+/* Prevent text selection on interactive elements */
+.navbar-brand,
+.action-btn,
+.theme-toggle {
+  user-select: none;
+  -webkit-user-select: none;
 }
     </style>
   </head>
@@ -306,68 +420,61 @@ textarea {
         <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
           <i class="fas fa-moon"></i>
         </button>
-    </nav>
-
-    <div class="container">
-      <div class="main-content">
-        <div class="chat-container" id="chatContainer"></div>
-
-        <div class="real-time-status">
-          <div class="status-indicator"></div>
-          <span class="status-text">Connected</span>
-        </div>
-
-        <div class="input-container">
-          <div class="input-box">
-            <textarea
-              placeholder="Type your message..."
-              rows="1"
-              oninput="autoResize(this)"
-            ></textarea>
-            <div class="action-buttons">
-              <button
-                class="action-btn"
-                onclick="attachFile()"
-                title="Attach file"
-              >
-                <i class="fas fa-paperclip"></i>
-              </button>
-              <button
-                class="action-btn"
-                onclick="sendMessage()"
-                title="Send message"
-              >
-                <i class="fas fa-paper-plane"></i>
-              </button>
+      </nav>
+  
+      <div class="container">
+        <div class="main-content">
+          <div class="chat-container" id="chatContainer"></div>
+          <div class="input-container">
+            <div class="input-box">
+              <textarea
+                placeholder="Type your message..."
+                rows="1"
+                oninput="autoResize(this)"
+              ></textarea>
+              <div class="action-buttons">
+                <button class="action-btn" onclick="attachFile()" title="Attach file">
+                  <i class="fas fa-paperclip"></i>
+                </button>
+                <button class="action-btn" onclick="sendMessage()" title="Send message">
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
     <script>
-// API Key and Configuration
+// API Key Configuration
 const PRIVATE_API_KEY = "AIzaSyBJE6IqXU1oDBBhnvNbnrpHZIvwfrS08Ms";
 
-// Configuration and state
-let config = {
+// Configuration and State Management
+const config = {
   aiAvatar: "death.png",
   userAvatar: "users.png",
   theme: localStorage.getItem("theme") || "light",
+  maxFileSize: 5 * 1024 * 1024, // 5MB
+  typingTimeout: 1000,
+  welcomeDelay: 1000
 };
 
-// Rest of the code remains exactly the same
-let isConnected = true;
-let typingTimeout;
+// State variables
+let isConnected = navigator.onLine;
 let isTyping = false;
+let typingTimeout;
 
-// Load theme on page load
-document.addEventListener("DOMContentLoaded", function() {
-  applyTheme();
-  addWelcomeMessage();
-  setupEventListeners();
+// Initialize Application
+document.addEventListener("DOMContentLoaded", () => {
+  initializeApp();
 });
 
-// Theme handling
+function initializeApp() {
+  applyTheme();
+  setupEventListeners();
+  addWelcomeMessage();
+}
+
+// Theme Management
 function toggleTheme() {
   config.theme = config.theme === "light" ? "dark" : "light";
   localStorage.setItem("theme", config.theme);
@@ -376,34 +483,94 @@ function toggleTheme() {
 
 function applyTheme() {
   document.documentElement.setAttribute("data-theme", config.theme);
+  updateThemeIcon();
+}
+
+function updateThemeIcon() {
   const themeIcon = document.querySelector(".theme-toggle i");
   if (themeIcon) {
     themeIcon.className = config.theme === "light" ? "fas fa-moon" : "fas fa-sun";
   }
 }
 
-// Connection status
+// Connection Status Management
 function updateConnectionStatus(connected) {
   isConnected = connected;
-  const status = document.querySelector(".real-time-status");
-  const indicator = status.querySelector(".status-indicator");
-  const text = status.querySelector(".status-text");
-
-  status.classList.add("active");
-  if (connected) {
-    indicator.classList.remove("offline");
-    text.textContent = "Connected";
-  } else {
-    indicator.classList.add("offline");
-    text.textContent = "Disconnected";
+  
+  if (!connected) {
+    addMessage("Connection lost. Please check your internet connection.", "ai");
   }
-
-  setTimeout(() => {
-    status.classList.remove("active");
-  }, 3000);
 }
 
-// Textarea handling
+// Message Handling
+function addMessage(content, type) {
+  const chatContainer = document.getElementById("chatContainer");
+  const messageDiv = createMessageElement(content, type);
+  chatContainer.appendChild(messageDiv);
+  scrollToBottom();
+}
+
+function createMessageElement(content, type) {
+  const messageDiv = document.createElement("div");
+  messageDiv.className = `message ${type}`;
+
+  const avatarDiv = createAvatarElement(type);
+  const contentDiv = createContentElement(content);
+
+  messageDiv.appendChild(avatarDiv);
+  messageDiv.appendChild(contentDiv);
+
+  return messageDiv;
+}
+
+function createAvatarElement(type) {
+  const avatarDiv = document.createElement("div");
+  avatarDiv.className = "avatar";
+  
+  const avatarImg = document.createElement("img");
+  avatarImg.src = type === "ai" ? config.aiAvatar : config.userAvatar;
+  avatarImg.alt = `${type === "ai" ? "AI" : "User"} Avatar`;
+  avatarDiv.appendChild(avatarImg);
+
+  return avatarDiv;
+}
+
+function createContentElement(content) {
+  const contentDiv = document.createElement("div");
+  contentDiv.className = "message-content";
+  contentDiv.textContent = content;
+  return contentDiv;
+}
+
+// Typing Indicator
+function addTypingIndicator() {
+  const typingDiv = document.createElement("div");
+  typingDiv.className = "message ai typing-message";
+  typingDiv.innerHTML = `
+    <div class="avatar">
+      <img src="${config.aiAvatar}" alt="AI Avatar" />
+    </div>
+    <div class="message-content">
+      <div class="typing-indicator">
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+      </div>
+    </div>
+  `;
+  document.getElementById("chatContainer").appendChild(typingDiv);
+  scrollToBottom();
+  return typingDiv;
+}
+
+function removeTypingIndicator() {
+  const typingIndicator = document.querySelector(".typing-message");
+  if (typingIndicator) {
+    typingIndicator.remove();
+  }
+}
+
+// Textarea Management
 function autoResize(textarea) {
   textarea.style.height = "auto";
   const maxHeight = window.innerHeight < 600 ? 80 : 120;
@@ -411,7 +578,7 @@ function autoResize(textarea) {
   textarea.style.overflowY = textarea.scrollHeight > maxHeight ? "auto" : "hidden";
 }
 
-// File handling
+// File Handling
 function attachFile() {
   const input = document.createElement("input");
   input.type = "file";
@@ -423,8 +590,7 @@ function attachFile() {
 function handleFileUpload(file) {
   if (!file) return;
   
-  const maxSize = 5 * 1024 * 1024; // 5MB
-  if (file.size > maxSize) {
+  if (file.size > config.maxFileSize) {
     addMessage("File size exceeds 5MB limit. Please choose a smaller file.", "ai");
     return;
   }
@@ -435,67 +601,21 @@ function handleFileUpload(file) {
   reader.readAsDataURL(file);
 }
 
-// Chat functionality
-function addMessage(content, type) {
-  const chatContainer = document.getElementById("chatContainer");
-  const messageDiv = document.createElement("div");
-  messageDiv.className = `message ${type}`;
-
-  const avatarDiv = document.createElement("div");
-  avatarDiv.className = "avatar";
-  
-  const avatarImg = document.createElement("img");
-  avatarImg.src = type === "ai" ? config.aiAvatar : config.userAvatar;
-  avatarImg.alt = `${type === "ai" ? "AI" : "User"} Avatar`;
-  avatarDiv.appendChild(avatarImg);
-
-  const contentDiv = document.createElement("div");
-  contentDiv.className = "message-content";
-  contentDiv.textContent = content;
-
-  messageDiv.appendChild(avatarDiv);
-  messageDiv.appendChild(contentDiv);
-  chatContainer.appendChild(messageDiv);
-
-  chatContainer.scrollTop = chatContainer.scrollHeight;
-}
-
-function addTypingIndicator() {
-  const typingDiv = document.createElement("div");
-  typingDiv.className = "message ai typing-indicator";
-  typingDiv.innerHTML = `
-    <div class="avatar">
-      <img src="${config.aiAvatar}" alt="AI Avatar" />
-    </div>
-    <div class="message-content">
-      <div class="typing-dots">
-        <span>.</span><span>.</span><span>.</span>
-      </div>
-    </div>
-  `;
-  document.getElementById("chatContainer").appendChild(typingDiv);
-  return typingDiv;
-}
-
-function removeTypingIndicator() {
-  const typingIndicator = document.querySelector(".typing-indicator");
-  if (typingIndicator) {
-    typingIndicator.remove();
-  }
-}
-
+// Message Sending and API Integration
 async function sendMessage() {
   const textarea = document.querySelector("textarea");
   const message = textarea.value.trim();
 
   if (!message || !isConnected) return;
 
+  // Clear textarea and reset size
   textarea.value = "";
   textarea.style.height = "auto";
   autoResize(textarea);
 
+  // Add user message and show typing indicator
   addMessage(message, "user");
-  const typingIndicator = addTypingIndicator();
+  addTypingIndicator();
 
   try {
     const response = await getGeminiResponse(message);
@@ -519,16 +639,12 @@ async function getGeminiResponse(message) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        contents: [
-          {
-            parts: [
-              {
-                text: message,
-              },
-            ],
-          },
-        ],
-      }),
+        contents: [{
+          parts: [{
+            text: message
+          }]
+        }]
+      })
     });
 
     if (!response.ok) {
@@ -543,40 +659,52 @@ async function getGeminiResponse(message) {
   }
 }
 
-// Setup and initialization
+// Event Listeners Setup
 function setupEventListeners() {
   const textarea = document.querySelector("textarea");
   
-  // Enter key handling
-  textarea.addEventListener("keydown", function(e) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
+  // Textarea event listeners
+  textarea.addEventListener("keydown", handleKeyPress);
+  textarea.addEventListener("input", handleInput);
 
-  // Input handling
-  textarea.addEventListener("input", function() {
-    autoResize(this);
-    if (!isTyping) {
-      isTyping = true;
-    }
-    clearTimeout(typingTimeout);
-    typingTimeout = setTimeout(() => {
-      isTyping = false;
-    }, 1000);
-  });
-
-  // Network status
+  // Network status listeners
   window.addEventListener("online", () => updateConnectionStatus(true));
   window.addEventListener("offline", () => updateConnectionStatus(false));
+}
+
+function handleKeyPress(e) {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function handleInput() {
+  autoResize(this);
+  handleTypingState();
+}
+
+function handleTypingState() {
+  if (!isTyping) {
+    isTyping = true;
+  }
+  clearTimeout(typingTimeout);
+  typingTimeout = setTimeout(() => {
+    isTyping = false;
+  }, config.typingTimeout);
+}
+
+// Utility Functions
+function scrollToBottom() {
+  const chatContainer = document.getElementById("chatContainer");
+  chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
 function addWelcomeMessage() {
   setTimeout(() => {
     addMessage("Hello! How can I help you today?", "ai");
-  }, 1000);
+  }, config.welcomeDelay);
 }
-      </script>
+</script>
   </body>
 </html>
