@@ -3,1109 +3,1429 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fangels Chat</title>
-    <link rel="shortcut icon" type="image/png" href="wings.png" />
+    <title>Seputar Teknologi</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css"
+      rel="stylesheet"
+    />
     <style>
+      /* Reset and base styles */
       * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Oxygen, Ubuntu, Cantarell, sans-serif;
       }
-
       :root {
-        --primary-color: #2563eb;
-        --primary-hover: #1d4ed8;
-        --bg-color: #f8fafc;
-        --white-tone: #ffffff;
-        --sidebar-width: 280px;
-        --header-height: 64px;
-        --border-color: #e2e8f0;
-        --text-primary: #1e293b;
-        --text-secondary: #64748b;
-        --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-        --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-        --transition: all 0.2s ease;
-        --safe-bottom: env(safe-area-inset-bottom, 0px);
+        --primary-color: #1da1f2;
+        --background-color: #f5f8fa;
+        --border-color: #e1e8ed;
+        --text-color: #14171a;
+        --secondary-text: #657786;
       }
 
       body {
-        background: var(--bg-color);
-        height: 100vh;
-        height: -webkit-fill-available;
-        overflow: hidden;
-        color: var(--text-primary);
-        position: fixed;
-        width: 100%;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
       }
 
-      /* Sidebar */
-      .sidebar {
+      /* Navbar styles */
+      .navbar {
+        background-color: white;
+        border-bottom: 1px solid #dbdbdb;
         position: fixed;
+        top: 0;
         left: 0;
-        top: 0;
-        bottom: 0;
-        width: var(--sidebar-width);
-        background: var(--white-tone);
-        border-right: 1px solid var(--border-color);
-        display: flex;
-        flex-direction: column;
-        box-shadow: var(--shadow-sm);
+        right: 0;
         z-index: 1000;
-        transition: transform 0.3s ease;
-        transform: translateX(calc(-100% + 50px));
       }
 
-      .sidebar:hover {
-        transform: translateX(0);
-      }
-
-      .sidebar::after {
-        content: "≡";
-        position: absolute;
-        right: -50px;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 50px;
-        height: 50px;
-        background: var(--white-tone);
-        border: 1px solid var(--border-color);
-        border-left: none;
-        border-radius: 0 8px 8px 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 24px;
-        color: var(--text-secondary);
-        cursor: pointer;
-        transition: opacity 0.2s ease;
-      }
-
-      .sidebar:hover::after {
-        opacity: 0;
-      }
-
-      .sidebar-header {
+      .nav-container {
+        max-width: 975px;
+        margin: 0 auto;
         padding: 0 20px;
-        height: var(--header-height);
-        border-bottom: 1px solid var(--border-color);
+        height: 60px;
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        background: white;
-        position: sticky;
-        top: 0;
-        z-index: 2;
+        align-items: center;
       }
 
-      .logo {
+      .nav-brand {
         font-size: 24px;
         font-weight: bold;
-        color: var(--primary-color);
-        letter-spacing: -0.5px;
+        color: #262626;
+        text-decoration: none;
       }
 
-      /* New Chat Button */
-      .new-chat-btn {
-        margin: 20px;
-        padding: 12px 20px;
-        background: var(--primary-color);
+      .nav-menu {
+        display: flex;
+        align-items: center;
+        gap: 22px;
+      }
+
+      .nav-item {
+        text-decoration: none;
+        color: #262626;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px;
+        border-radius: 8px;
+        transition: background-color 0.2s;
+      }
+
+      .nav-item:hover {
+        background-color: #f0f0f0;
+      }
+
+      .nav-item.active {
+        font-weight: bold;
+      }
+
+      .notification-badge {
+        background-color: #ff3040;
         color: white;
-        border: none;
-        border-radius: 12px;
-        cursor: pointer;
-        font-size: 15px;
-        font-weight: 500;
-        transition: var(--transition);
+        font-size: 12px;
+        padding: 2px 6px;
+        border-radius: 10px;
+        margin-left: -6px;
+        margin-top: -10px;
+      }
+      .header-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+        color: #1c1e21;
+      }
+      .profile-pic {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .verified-badge {
+        width: 20px;
+        height: 20px;
+        background: #1da1f2;
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 10px;
-        box-shadow: var(--shadow-sm);
       }
 
-      .new-chat-btn:hover {
-        background: var(--primary-hover);
-        transform: translateY(-1px);
-        box-shadow: var(--shadow-md);
+      .verified-badge svg {
+        width: 12px;
+        height: 12px;
+        fill: white;
       }
 
-      .chat-list {
-        flex: 1;
-        overflow-y: auto;
-        padding: 16px;
-      }
-
-      /* Chat Items */
-      .chat-item {
-        padding: 14px 18px;
-        margin-bottom: 8px;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: white;
-        border: 1px solid var(--border-color);
-      }
-
-      .chat-item:hover {
-        background: #f1f5f9;
-        transform: translateX(2px);
-      }
-
-      .chat-item.active {
-        background: #eff6ff;
-        border-color: #bfdbfe;
-      }
-
-      .chat-item .title {
-        flex: 1;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        color: var(--text-primary);
-        font-weight: 500;
-      }
-
-      /* Delete Button */
-      .delete-chat {
-        opacity: 0;
-        transition: var(--transition);
-        padding: 6px;
-        border-radius: 8px;
-        color: #ef4444;
-        cursor: pointer;
-      }
-
-      .chat-item:hover .delete-chat {
-        opacity: 1;
-      }
-
-      .delete-chat:hover {
-        background: rgba(239, 68, 68, 0.1);
-      }
-
-      /* Main Content */
-      .main-content {
-        margin-left: 50px;
-        width: calc(100% - 50px);
-        height: 100vh;
-        height: -webkit-fill-available;
-        display: flex;
-        flex-direction: column;
-        background: var(--white-tone);
-        position: relative;
-        transition: margin-left 0.3s ease, width 0.3s ease;
-      }
-
-      .sidebar:hover + .main-content {
-        margin-left: var(--sidebar-width);
-        width: calc(100% - var(--sidebar-width));
-      }
-
-      .chat-header {
-        height: var(--header-height);
-        padding: 0 24px;
-        border-bottom: 1px solid var(--border-color);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        background: white;
-        position: sticky;
-        top: 0;
-        z-index: 2;
-      }
-
-      .menu-toggle {
+      .hamburger {
         display: none;
         background: none;
         border: none;
-        font-size: 24px;
         cursor: pointer;
         padding: 8px;
-        color: var(--text-secondary);
       }
 
-      .chat-container {
-        flex: 1;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-        padding: 24px;
+      /* Mobile menu */
+      .mobile-menu {
+        display: none;
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background-color: white;
+        border-bottom: 1px solid #dbdbdb;
+        padding: 20px;
+      }
+
+      .mobile-menu .nav-item {
+        padding: 12px;
+        border-radius: 8px;
+      }
+
+      .search-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+
+      .search-input {
+        padding: 8px 12px;
+        border: 1px solid #dbdbdb;
+        border-radius: 8px;
+        width: 240px;
+        font-size: 14px;
+      }
+
+      /* Responsive styles */
+      @media (max-width: 768px) {
+        .nav-menu {
+          display: none;
+        }
+
+        .hamburger {
+          display: block;
+        }
+
+        .mobile-menu.active {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .search-container {
+          display: none;
+        }
+
+        .mobile-menu .search-container {
+          display: flex;
+          margin: 12px 0;
+        }
+
+        .mobile-menu .search-input {
+          width: 100%;
+        }
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+          Roboto, sans-serif;
+      }
+
+      .main-content {
+        width: flex;
+        padding-top: 60px;
+        background: #fafafa;
+      }
+
+      .stories-container {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 16px;
+        background: white;
+        border: 1px solid #dbdbdb;
+        border-radius: 8px;
+      }
+
+      .stories-wrapper {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
         scroll-behavior: smooth;
+        padding: 4px 0;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
         position: relative;
       }
 
-      /* Updated Message Styles */
-      .message {
-        max-width: 850px;
-        margin: 20px auto;
-        padding: 16px 20px;
-        border-radius: 16px;
-        background: white;
-        box-shadow: var(--shadow-sm);
-        animation: messageIn 0.3s ease;
-        display: flex;
-        gap: 16px;
-        width: 100%;
-        overflow-wrap: break-word;
-        word-wrap: break-word;
-        word-break: break-word;
-        hyphens: auto;
+      .stories-wrapper::-webkit-scrollbar {
+        display: none;
       }
 
-      .message .avatar {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
+      .story {
+        min-width: 85px;
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.2s;
         flex-shrink: 0;
+        position: relative;
+      }
+
+      .story:active {
+        transform: scale(0.95);
+      }
+
+      .add-story {
+        position: relative;
+      }
+
+      .add-story .story-ring {
+        background: #efefef;
+        border: none;
+      }
+
+      .add-story .story-image {
+        border: none;
+      }
+
+      .add-button {
+        position: absolute;
+        bottom: 30px;
+        right: 0;
+        width: 24px;
+        height: 24px;
+        background: #0095f6;
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
+        border: 3px solid white;
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
       }
 
-      .message .avatar img {
+      .story-ring {
+        width: 85px;
+        height: 85px;
+        border-radius: 50%;
+        background: linear-gradient(
+          45deg,
+          #f09433,
+          #e6683c,
+          #dc2743,
+          #cc2366,
+          #bc1888
+        );
+        padding: 3px;
+        margin-bottom: 8px;
+      }
+
+      .story.seen .story-ring {
+        background: #dbdbdb;
+      }
+
+      .story-image {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid white;
+        background: #fafafa;
+      }
+
+      .story-username {
+        font-size: 12px;
+        color: #262626;
+        max-width: 85px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .story-timer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        display: flex;
+        gap: 4px;
+        padding: 8px;
+      }
+
+      .timer-segment {
+        height: 2px;
+        background: rgba(255, 255, 255, 0.35);
+        flex-grow: 1;
+        border-radius: 1px;
+      }
+
+      .timer-segment.active {
+        background: white;
+      }
+
+      .story-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+      }
+
+      .story-modal-content {
+        max-width: 400px;
+        width: 100%;
+        height: 100vh;
+        background: #262626;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .story-modal-header {
+        padding: 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: white;
+        background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), transparent);
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1;
+      }
+
+      .story-modal-user-image {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid white;
+      }
+
+      .story-modal-user-info {
+        flex-grow: 1;
+      }
+
+      .story-modal-username {
+        font-weight: 600;
+        font-size: 14px;
+        display: block;
+      }
+
+      .story-modal-time {
+        font-size: 12px;
+        opacity: 0.7;
+      }
+
+      .story-modal-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 8px;
+        opacity: 0.8;
+        transition: opacity 0.2s;
+      }
+
+      .story-modal-close:hover {
+        opacity: 1;
+      }
+
+      .story-modal-image {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        border-radius: 50%;
       }
 
-      .message .content {
-        flex: 1;
-        line-height: 1.6;
-        font-size: 15px;
-        color: var(--text-primary);
-        min-width: 0;
-        overflow-wrap: break-word;
-        word-wrap: break-word;
-        word-break: break-word;
-      }
-
-      .message.user {
-        background: #eff6ff;
-        border: 1px solid #bfdbfe;
-      }
-
-      .message.user .avatar {
-        background: #dbeafe;
-        color: var(--primary-color);
-      }
-
-      .message.assistant {
-        background: white;
-        border: 1px solid var(--border-color);
-      }
-
-      /* Code Blocks */
-      .code-block {
-        margin: 1em 0;
-        border-radius: 12px;
-        overflow: hidden;
-        background: #f8fafc;
-        font-size: 14px;
-        border: 1px solid var(--border-color);
-        max-width: 100%;
-      }
-
-      .code-block pre {
-        margin: 0;
-        padding: 16px;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        white-space: pre-wrap;
-        word-break: break-word;
-      }
-
-      .code-block code {
-        font-family: monospace;
-        white-space: pre-wrap;
-        word-break: break-word;
-      }
-
-      .code-header {
-        background: #f1f5f9;
-        padding: 8px 16px;
-        border-bottom: 1px solid var(--border-color);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .code-language {
-        color: var(--text-secondary);
-        font-size: 0.9em;
-        font-weight: 500;
-      }
-
-      .copy-button {
-        background: white;
-        border: 1px solid var(--border-color);
-        border-radius: 6px;
-        padding: 4px 10px;
-        font-size: 0.8em;
-        cursor: pointer;
-        transition: var(--transition);
-        color: var(--text-secondary);
-      }
-
-      .copy-button:hover {
-        background: #f1f5f9;
-        border-color: var(--text-secondary);
-      }
-
-      /* Inline Code */
-      .message .content code:not(.code-block code) {
-        background: #f1f5f9;
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-size: 0.9em;
-        white-space: pre-wrap;
-        word-break: break-word;
-      }
-
-      /* Lists */
-      .message .content ul,
-      .message .content ol {
-        padding-left: 1.5em;
-        margin: 0.5em 0;
-      }
-
-      .message .content li {
-        margin-bottom: 0.25em;
-      }
-
-      /* Tables */
-      .message .content table {
-        width: 100%;
-        max-width: 100%;
-        overflow-x: auto;
-        display: block;
-        border-collapse: collapse;
-        margin: 1em 0;
-      }
-
-      .message .content th,
-      .message .content td {
-        border: 1px solid var(--border-color);
-        padding: 8px;
-        text-align: left;
-      }
-
-      /* Input Area */
-      .input-container {
-        padding: 20px 24px;
-        padding-bottom: calc(20px + var(--safe-bottom));
-        background: white;
-        border-top: 1px solid var(--border-color);
-        position: sticky;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 2;
-      }
-
-      .input-box {
-        max-width: 850px;
-        margin: 0 auto;
-        position: relative;
-        background: var(--white-tone);
-        border-radius: 16px;
-        box-shadow: var(--shadow-sm);
-      }
-
-      textarea {
-        width: 100%;
-        padding: 16px;
-        padding-right: 56px;
-        border: 1px solid var(--border-color);
-        border-radius: 16px;
-        resize: none;
-        min-height: 56px;
-        max-height: 200px;
-        font-size: 15px;
-        line-height: 1.5;
-        background: var(--white-tone);
-        transition: var(--transition);
-        color: var(--text-primary);
-      }
-
-      textarea:focus {
-        outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-      }
-
-      /* Send Button */
-      .send-button {
-        position: absolute;
-        right: 12px;
-        bottom: 50%;
-        transform: translateY(50%);
-        background: var(--primary-color);
-        border: none;
-        color: white;
-        width: 32px;
-        height: 32px;
-        border-radius: 10px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: var(--transition);
-        box-shadow: var(--shadow-sm);
-      }
-
-      .send-button:hover {
-        background: var(--primary-hover);
-        transform: translateY(50%) scale(1.05);
-        box-shadow: var(--shadow-md);
-      }
-
-      /* Empty State */
-      .empty-state {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        color: var(--text-secondary);
-        text-align: center;
-        padding: 32px;
-      }
-
-      .empty-state h2 {
-        margin-bottom: 16px;
-        color: var(--text-primary);
-        font-size: 24px;
-      }
-
-      .empty-state p {
-        max-width: 440px;
-        line-height: 1.6;
-        font-size: 16px;
-      }
-
-      /* Animations */
-      @keyframes messageIn {
-        from {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      /* Scrollbar */
-      .chat-container::-webkit-scrollbar {
-        width: 6px;
-      }
-
-      .chat-container::-webkit-scrollbar-track {
-        background: transparent;
-      }
-
-      .chat-container::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 3px;
-      }
-
-      .chat-container::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
-      }
-      /* Mobile Responsiveness */
       @media (max-width: 768px) {
-        :root {
-          --header-height: 56px;
-        }
-
-        .sidebar {
-          transform: translateX(-100%);
-          width: 85%;
-          max-width: 320px;
-        }
-
-        .sidebar::after {
-          display: none;
-        }
-
-        .sidebar.active {
-          transform: translateX(0);
-        }
-
         .main-content {
-          margin-left: 0;
+          padding-top: 50px;
+        }
+
+        .stories-container {
+          padding: 8px;
+          border-radius: 0;
+          border-left: none;
+          border-right: none;
+        }
+
+        .story {
+          min-width: 75px;
+        }
+
+        .story-ring {
+          width: 75px;
+          height: 75px;
+        }
+
+        .add-button {
+          width: 22px;
+          height: 22px;
+          font-size: 14px;
+        }
+
+        .story-username {
+          font-size: 11px;
+          max-width: 75px;
+        }
+
+        .story-modal-content {
           width: 100%;
+          border-radius: 0;
         }
+      }
+      .sidebar {
+        height: calc(100vh - 64px);
+        position: sticky;
+        top: 64px;
+      }
 
-        .sidebar:hover + .main-content {
-          margin-left: 0;
-          width: 100%;
-        }
+      .post-form textarea {
+        resize: none;
+        min-height: 100px;
+      }
 
-        .chat-container {
-          padding: 16px;
-        }
+      .post-interaction:hover {
+        color: #3b82f6;
+      }
 
-        .message {
-          margin: 16px auto;
-          padding: 14px 16px;
-        }
+      .trending-topic:hover {
+        background-color: rgba(59, 130, 246, 0.1);
+      }
 
-        .input-container {
-          padding: 16px;
-        }
-
-        .menu-toggle {
-          display: block;
-        }
-
-        .sidebar-overlay {
+      @media (max-width: 1024px) {
+        .sidebar {
           display: none;
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0, 0, 0, 0.5);
-          z-index: 999;
         }
+      }
+      .media-preview {
+        max-width: 100%;
+        max-height: 300px;
+        object-fit: contain;
+      }
 
-        .sidebar-overlay.active {
-          display: block;
-        }
+      .media-input {
+        display: none;
       }
     </style>
   </head>
-  <body>
-    <div class="sidebar">
-      <div class="sidebar-header">
-        <div class="logo">Fangels</div>
-      </div>
-      <button class="new-chat-btn">
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
+  <body class="bg-gray-100">
+    <!-- Navigation -->
+    <nav class="navbar" role="navigation">
+      <div class="nav-container">
+        <a href="#" class="nav-brand">Seputar Teknologi</a>
+
+        <div class="search-container">
+          <input
+            type="search"
+            class="search-input"
+            placeholder="Search"
+            aria-label="Search"
+          />
+        </div>
+
+        <div class="nav-menu">
+          <a href="#" class="nav-item active" aria-label="Home">
+            <svg
+              aria-hidden="true"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                d="M12 2.0996L1 12H4V21H11V15H13V21H20V12H23L12 2.0996ZM12 4.79152L18 10.1914V19H15V13H9V19H6V10.1914L12 4.79152Z"
+              />
+            </svg>
+          </a>
+
+          <a href="explorer.html" class="nav-item" aria-label="Explore">
+            <svg
+              aria-hidden="true"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20Z"
+              />
+              <path d="M13 7H11V13H17V11H13V7Z" />
+            </svg>
+          </a>
+
+          <a href="aichat.html" class="nav-item" aria-label="Messages">
+            <svg
+              aria-hidden="true"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H6L4 18V4H20V16Z"
+              />
+            </svg>
+          </a>
+
+          <a href="#" class="nav-item" aria-label="Notifications">
+            <svg
+              aria-hidden="true"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.37 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.64 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16ZM16 17H8V11C8 8.52 9.51 6.5 12 6.5C14.49 6.5 16 8.52 16 11V17Z"
+              />
+            </svg>
+            <span class="notification-badge">3</span>
+          </a>
+
+          <a href="profile.html" class="nav-item" aria-label="Profile">
+            <img
+              src="profile-icon-symbol-design-illustration-vector.jpg"
+              alt="Profile"
+              class="profile-pic"
+            />
+          </a>
+        </div>
+
+        <button
+          class="hamburger"
+          aria-label="Toggle menu"
+          aria-expanded="false"
         >
-          <line x1="12" y1="5" x2="12" y2="19"></line>
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-        </svg>
-        New Chat
-      </button>
-      <div class="chat-list">
-        <!-- Chat history items will be added here -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 18H21V16H3V18ZM3 13H21V11H3V13ZM3 6V8H21V6H3Z" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="mobile-menu">
+        <div class="search-container">
+          <input
+            type="search"
+            class="search-input"
+            placeholder="Search"
+            aria-label="Search"
+          />
+        </div>
+        <a href="#" class="nav-item active">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 2.0996L1 12H4V21H11V15H13V21H20V12H23L12 2.0996ZM12 4.79152L18 10.1914V19H15V13H9V19H6V10.1914L12 4.79152Z"
+            />
+          </svg>
+          Home
+        </a>
+        <a href="explorer.html" class="nav-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.58 20 4 16.42 4 12C4 7.58 7.58 4 12 4C16.42 4 20 7.58 20 12C20 16.42 16.42 20 12 20Z"
+            />
+            <path d="M13 7H11V13H17V11H13V7Z" />
+          </svg>
+          Explore
+        </a>
+        <a href="aichat.html" class="nav-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H6L4 18V4H20V16Z"
+            />
+          </svg>
+          Chat with AI
+        </a>
+        <a href="#" class="nav-item">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.37 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.64 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16ZM16 17H8V11C8 8.52 9.51 6.5 12 6.5C14.49 6.5 16 8.52 16 11V17Z"
+            />
+          </svg>
+          Notifications
+        </a>
+        <a href="profile.html" class="nav-item">
+          <img
+            src="profile-icon-symbol-design-illustration-vector.jpg"
+            alt="Profile"
+            class="profile-pic"
+          />
+          Profile
+        </a>
+      </div>
+    </nav>
+    <div class="main-content">
+      <div class="stories-container">
+        <div class="stories-wrapper">
+          <!-- Stories will be inserted here by JavaScript -->
+        </div>
       </div>
     </div>
 
-    <div class="main-content">
-      <div class="chat-header">
-        <button class="menu-toggle">☰</button>
-        <div class="current-chat">New Chat</div>
-      </div>
-
-      <div id="chatContainer" class="chat-container">
-        <div class="empty-state">
-          <h2>Welcome to Fangels Chat</h2>
-          <p>
-            Start a new conversation or select a chat from the sidebar to
-            continue where you left off.
-          </p>
+    <!-- Story Modal -->
+    <div class="story-modal">
+      <div class="story-modal-content">
+        <div class="story-timer">
+          <!-- Timer segments will be added by JS -->
         </div>
+        <div class="story-modal-header">
+          <img class="story-modal-user-image" src="" alt="" />
+          <div class="story-modal-user-info">
+            <span class="story-modal-username"></span>
+            <span class="story-modal-time">1h ago</span>
+          </div>
+          <button class="story-modal-close" aria-label="Close story">×</button>
+        </div>
+        <img class="story-modal-image" src="" alt="" />
       </div>
+    </div>
 
-      <div class="input-container">
-        <div class="input-box">
-          <textarea placeholder="Type your message here..." rows="1"></textarea>
-          <button class="send-button">
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
-          </button>
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto pt-16 px-4">
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 py-6">
+        <!-- Left Sidebar -->
+        <div class="lg:col-span-1">
+          <div class="sidebar bg-white rounded-lg shadow p-4 space-y-4">
+            <div class="flex items-center space-x-3 p-2">
+              <img
+                src="84e6dfb80d2437fa925d3e068153048c.jpg"
+                alt="Profile"
+                class="w-10 h-10 rounded-full"
+              />
+              <div>
+                <h3 class="font-semibold">AL FANGKY</h3>
+                <p class="text-sm text-gray-500">@alfangky</p>
+              </div>
+            </div>
+
+            <div class="border-t pt-4">
+              <h4 class="font-semibold mb-2">Statistics</h4>
+              <div class="grid grid-cols-3 gap-4 text-center">
+                <div>
+                  <p class="font-bold">528</p>
+                  <p class="text-sm text-gray-500">Posts</p>
+                </div>
+                <div>
+                  <p class="font-bold">2.1k</p>
+                  <p class="text-sm text-gray-500">Following</p>
+                </div>
+                <div>
+                  <p class="font-bold">1.8k</p>
+                  <p class="text-sm text-gray-500">Followers</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="border-t pt-4">
+              <h4 class="font-semibold mb-2">Quick Links</h4>
+              <ul class="space-y-2">
+                <li>
+                  <a
+                    href="#"
+                    class="flex items-center space-x-2 text-gray-700 hover:text-blue-600 p-2 rounded-lg hover:bg-blue-50"
+                  >
+                    <svg
+                      class="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M12 2L1 12h3v9h7v-6h2v6h7v-9h3L12 2zm0 2.7L19 11v8h-3v-6H8v6H5v-8l7-6.3z"
+                      />
+                    </svg>
+                    <span>Home</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="flex items-center space-x-2 text-gray-700 hover:text-blue-600 p-2 rounded-lg hover:bg-blue-50"
+                  >
+                    <svg
+                      class="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
+                      />
+                    </svg>
+                    <span>Profile</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="flex items-center space-x-2 text-gray-700 hover:text-blue-600 p-2 rounded-lg hover:bg-blue-50"
+                  >
+                    <svg
+                      class="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"
+                      />
+                      <path d="M7 12h2v5H7zm4-7h2v12h-2zm4 4h2v8h-2z" />
+                    </svg>
+                    <span>Analytics</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="flex items-center space-x-2 text-gray-700 hover:text-blue-600 p-2 rounded-lg hover:bg-blue-50"
+                  >
+                    <svg
+                      class="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"
+                      />
+                    </svg>
+                    <span>Settings</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="lg:col-span-2">
+          <!-- Post Form -->
+          <div class="bg-white rounded-lg shadow mb-6">
+            <div class="p-4">
+              <div class="flex space-x-4">
+                <img
+                  src="profile-icon-symbol-design-illustration-vector.jpg"
+                  alt="Profile"
+                  class="w-10 h-10 rounded-full"
+                />
+                <div class="w-full">
+                  <textarea
+                    id="postContent"
+                    placeholder="What's on your mind?"
+                    class="w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  ></textarea>
+                  <div id="mediaPreviewContainer" class="mt-4 hidden">
+                    <img
+                      id="imagePreview"
+                      class="media-preview hidden"
+                      alt="Preview"
+                    />
+                    <video
+                      id="videoPreview"
+                      class="media-preview hidden"
+                      controls
+                    ></video>
+                  </div>
+                </div>
+              </div>
+              <div class="flex justify-between items-center mt-4">
+                <div class="flex space-x-4">
+                  <input
+                    type="file"
+                    id="photoInput"
+                    class="media-input"
+                    accept="image/*"
+                  />
+                  <button
+                    onclick="document.getElementById('photoInput').click()"
+                    class="flex items-center space-x-2 text-gray-600 hover:text-blue-600"
+                  >
+                    <svg
+                      class="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"
+                      />
+                    </svg>
+                    <span>Photo</span>
+                  </button>
+                  <input
+                    type="file"
+                    id="videoInput"
+                    class="media-input"
+                    accept="video/*"
+                  />
+                  <button
+                    onclick="document.getElementById('videoInput').click()"
+                    class="flex items-center space-x-2 text-gray-600 hover:text-blue-600"
+                  >
+                    <svg
+                      class="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4zM14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2z"
+                      />
+                    </svg>
+                    <span>Video</span>
+                  </button>
+                </div>
+                <button
+                  id="postButton"
+                  class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  Post
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Posts Container -->
+          <div id="postsContainer" class="space-y-6">
+            <!-- Posts will be added here dynamically -->
+          </div>
+          <!-- Posts -->
+          <div class="space-y-6">
+            <!-- Sample Post -->
+            <div class="bg-white rounded-lg shadow">
+              <div class="p-4">
+                <div class="flex justify-between items-start">
+                  <div class="flex space-x-3">
+                    <img
+                      src="84e6dfb80d2437fa925d3e068153048c.jpg"
+                      alt="Profile"
+                      class="w-10 h-10 rounded-full"
+                    />
+                    <div>
+                      <h1 class="header-title">
+                        AL FANGKY
+                        <span class="verified-badge">
+                          <svg viewBox="0 0 24 24">
+                            <path
+                              d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"
+                            />
+                          </svg>
+                        </span>
+                      </h1>
+                      Developer
+                    </div>
+                  </div>
+                  <button class="text-gray-400 hover:text-gray-600">
+                    <svg
+                      class="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                <p class="mt-4">
+                  Just finished working on an amazing project! Can't wait to
+                  share more details with everyone. #dji #drones
+                </p>
+                <img
+                  src="drone-permit-license-malaysia-001.jpg"
+                  alt="Post image"
+                  class="mt-4 w-full rounded-lg"
+                />
+                <div
+                  class="mt-4 flex justify-between items-center border-t pt-4"
+                >
+                  <button class="post-interaction flex items-center space-x-2">
+                    <svg
+                      class="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                      />
+                    </svg>
+                    <span>2.5k</span>
+                  </button>
+                  <button class="post-interaction flex items-center space-x-2">
+                    <svg
+                      class="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"
+                      />
+                    </svg>
+                    <span>482</span>
+                  </button>
+                  <button class="post-interaction flex items-center space-x-2">
+                    <svg
+                      class="w-5 h-5"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"
+                      />
+                    </svg>
+                    <span>Share</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Sidebar -->
+        <div class="lg:col-span-1">
+          <div class="sidebar bg-white rounded-lg shadow p-4 space-y-6">
+            <!-- Trending Topics -->
+            <div>
+              <h3 class="font-semibold text-xl mb-4">Trending Topics</h3>
+              <div class="space-y-4">
+                <div class="trending-topic p-2 rounded-lg cursor-pointer">
+                  <p class="text-sm text-gray-500">#webdevelopment</p>
+                  <p class="font-medium">10.5k posts</p>
+                </div>
+                <div class="trending-topic p-2 rounded-lg cursor-pointer">
+                  <p class="text-sm text-gray-500">#technology</p>
+                  <p class="font-medium">8.2k posts</p>
+                </div>
+                <div class="trending-topic p-2 rounded-lg cursor-pointer">
+                  <p class="text-sm text-gray-500">#coding</p>
+                  <p class="font-medium">6.7k posts</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Suggested Follows -->
+            <div>
+              <h3 class="font-semibold text-xl mb-4">Who to Follow</h3>
+              <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <img
+                      src="130b8f7f683f3dc8761a1de6674c139c.jpg"
+                      alt="Profile"
+                      class="w-10 h-10 rounded-full"
+                    />
+                    <div>
+                      <p class="font-medium">Kiki Wayne</p>
+                      <p class="text-sm text-gray-500">@kikiwayne</p>
+                    </div>
+                  </div>
+                  <button
+                    class="px-4 py-1 bg-blue-600 text-white rounded-full hover:bg-blue-700 text-sm"
+                  >
+                    Follow
+                  </button>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-3">
+                    <img
+                      src="delon.jpg"
+                      alt="Profile"
+                      class="w-10 h-10 rounded-full"
+                    />
+                    <div>
+                      <p class="font-medium">Kiki Delon</p>
+                      <p class="text-sm text-gray-500">@kikidelon</p>
+                    </div>
+                  </div>
+                  <button
+                    class="px-4 py-1 bg-blue-600 text-white rounded-full hover:bg-blue-700 text-sm"
+                  >
+                    Follow
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <script>
-      // API Configuration
-      const API_KEY = "AIzaSyBJE6IqXU1oDBBhnvNbnrpHZIvwfrS08Ms";
-      const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`;
-      const AI_AVATAR_URL = "wings.png";
+      document.addEventListener("DOMContentLoaded", function () {
+        const hamburger = document.querySelector(".hamburger");
+        const mobileMenu = document.querySelector(".mobile-menu");
+        const navItems = document.querySelectorAll(".nav-item");
 
-      // Elements
-      const menuToggle = document.querySelector(".menu-toggle");
-      const sidebar = document.querySelector(".sidebar");
-      const textarea = document.querySelector("textarea");
-      const sendButton = document.querySelector(".send-button");
-      const chatContainer = document.getElementById("chatContainer");
-      const newChatBtn = document.querySelector(".new-chat-btn");
-      const chatList = document.querySelector(".chat-list");
-      const currentChatTitle = document.querySelector(".current-chat");
-
-      let currentChatId = null;
-      let chats = {};
-
-      // Menu toggle functionality
-      menuToggle.addEventListener("click", () => {
-        sidebar.classList.toggle("active");
-      });
-
-      // Create typing indicator
-      function createTypingIndicator() {
-        const indicator = document.createElement("div");
-        indicator.className = "typing-indicator";
-        indicator.innerHTML = `
-        <div class="typing-dot"></div>
-        <div class="typing-dot"></div>
-        <div class="typing-dot"></div>
-    `;
-        return indicator;
-      }
-
-      // Format code blocks in the message
-      function formatCodeBlocks(text) {
-        // Replace markdown code blocks with formatted HTML
-        text = text.replace(
-          /```(\w+)?\n([\s\S]*?)```/g,
-          (match, language, code) => {
-            return `<div class="code-block">
-                    <div class="code-header">
-                        ${
-                          language
-                            ? `<span class="code-language">${language}</span>`
-                            : ""
-                        }
-                        <button class="copy-button" onclick="copyCode(this)">Copy</button>
-                    </div>
-                    <pre><code class="${language || ""}">${escapeHtml(
-              code.trim()
-            )}</code></pre>
-                </div>`;
-          }
-        );
-
-        // Replace inline code
-        text = text.replace(/`([^`]+)`/g, "<code>$1</code>");
-
-        return text;
-      }
-
-      // Escape HTML special characters
-      function escapeHtml(text) {
-        const div = document.createElement("div");
-        div.textContent = text;
-        return div.innerHTML;
-      }
-
-      // Copy code function
-      function copyCode(button) {
-        const codeBlock =
-          button.parentElement.nextElementSibling.querySelector("code");
-        navigator.clipboard.writeText(codeBlock.textContent);
-
-        // Show feedback
-        const originalText = button.textContent;
-        button.textContent = "Copied!";
-        setTimeout(() => {
-          button.textContent = originalText;
-        }, 2000);
-      }
-
-      // Format message with proper styling
-      function formatMessage(text) {
-        // Format code blocks first
-        text = formatCodeBlocks(text);
-
-        // Format bold text
-        text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-
-        // Format italic text
-        text = text.replace(/\*(.*?)\*/g, "<em>$1</em>");
-
-        // Format lists
-        text = text.replace(/^\s*[-*+]\s+(.+)/gm, "<li>$1</li>");
-        text = text.replace(/(<li>.*<\/li>)/s, "<ul>$1</ul>");
-
-        // Format numbered lists
-        text = text.replace(/^\s*\d+\.\s+(.+)/gm, "<li>$1</li>");
-        text = text.replace(/(<li>.*<\/li>)/s, "<ol>$1</ol>");
-
-        // Format headers
-        text = text.replace(/^#{1,6}\s+(.+)$/gm, (match, content) => {
-          const level = match.trim().indexOf(" ");
-          return `<h${level}>${content}</h${level}>`;
+        // Toggle mobile menu
+        hamburger.addEventListener("click", function () {
+          mobileMenu.classList.toggle("active");
+          const isExpanded = mobileMenu.classList.contains("active");
+          hamburger.setAttribute("aria-expanded", isExpanded);
         });
 
-        // Convert line breaks to paragraphs
-        text = text
-          .split("\n\n")
-          .map((para) => para.trim())
-          .filter((para) => para)
-          .map((para) => `<p>${para}</p>`)
-          .join("");
-
-        return text;
-      }
-
-      // Add message to chat
-      function addMessage(text, sender) {
-        const messageDiv = document.createElement("div");
-        messageDiv.className = `message ${sender}`;
-
-        const avatarDiv = document.createElement("div");
-        avatarDiv.className = "avatar";
-
-        if (sender === "assistant") {
-          const avatarImg = document.createElement("img");
-          avatarImg.src = AI_AVATAR_URL;
-          avatarImg.alt = "AI Assistant";
-          avatarDiv.appendChild(avatarImg);
-        } else {
-          avatarDiv.innerHTML = `
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-        `;
-        }
-
-        const contentDiv = document.createElement("div");
-        contentDiv.className = "content";
-        contentDiv.innerHTML =
-          sender === "assistant" ? formatMessage(text) : escapeHtml(text);
-
-        messageDiv.appendChild(avatarDiv);
-        messageDiv.appendChild(contentDiv);
-        chatContainer.appendChild(messageDiv);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      }
-
-      // Send message to API
-      async function sendMessage() {
-        const message = textarea.value.trim();
-        if (!message) return;
-
-        try {
-          const emptyState = chatContainer.querySelector(".empty-state");
-          if (emptyState) emptyState.remove();
-
-          addMessage(message, "user");
-
-          const typingIndicator = createTypingIndicator();
-          chatContainer.appendChild(typingIndicator);
-
-          textarea.value = "";
-          textarea.style.height = "auto";
-
-          if (!currentChatId) {
-            createNewChat();
-          }
-
-          if (!chats[currentChatId].messages) {
-            chats[currentChatId].messages = [];
-          }
-
-          chats[currentChatId].messages.push({
-            role: "user",
-            content: message,
+        // Handle active state for nav items
+        navItems.forEach((item) => {
+          item.addEventListener("click", function (e) {
+            // Remove active class from all items
+            navItems.forEach((navItem) => navItem.classList.remove("active"));
+            // Add active class to clicked item
+            this.classList.add("active");
           });
+        });
 
-          const response = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              contents: [
-                {
-                  parts: [
-                    {
-                      text: message,
-                    },
-                  ],
-                },
-              ],
-              generationConfig: {
-                temperature: 0.7,
-                topK: 40,
-                topP: 0.95,
-                maxOutputTokens: 1024,
-              },
-            }),
-          });
-
-          typingIndicator.remove();
-
-          if (!response.ok) {
-            throw new Error(`API error: ${response.status}`);
-          }
-
-          const data = await response.json();
-
+        // Close mobile menu when clicking outside
+        document.addEventListener("click", function (e) {
           if (
-            !data.candidates ||
-            !data.candidates[0] ||
-            !data.candidates[0].content
+            !e.target.closest(".mobile-menu") &&
+            !e.target.closest(".hamburger")
           ) {
-            throw new Error("Invalid API response format");
+            mobileMenu.classList.remove("active");
+            hamburger.setAttribute("aria-expanded", "false");
           }
+        });
 
-          const assistantResponse = data.candidates[0].content.parts[0].text;
-
-          addMessage(assistantResponse, "assistant");
-
-          chats[currentChatId].messages.push({
-            role: "assistant",
-            content: assistantResponse,
+        // Handle keyboard navigation
+        navItems.forEach((item) => {
+          item.addEventListener("keydown", function (e) {
+            if (e.key === " " || e.key === "Enter") {
+              e.preventDefault();
+              this.click();
+            }
           });
-
-          // Update chat title if this is the first message
-          if (chats[currentChatId].messages.length === 2) {
-            const title =
-              message.slice(0, 30) + (message.length > 30 ? "..." : "");
-            chats[currentChatId].title = title;
-            updateChatList();
-            currentChatTitle.textContent = title;
-          }
-
-          saveChatsToStorage();
-        } catch (error) {
-          console.error("Error:", error);
-          const typingIndicator = document.querySelector(".typing-indicator");
-          if (typingIndicator) typingIndicator.remove();
-
-          addMessage(
-            "I apologize, but I encountered an error while processing your request. Please try again.",
-            "assistant"
-          );
-        }
-      }
-
-      // Create new chat
-      function createNewChat() {
-        const chatId = "chat_" + Date.now();
-        const chatTitle = "New Chat";
-
-        chats[chatId] = {
-          id: chatId,
-          title: chatTitle,
-          messages: [],
-        };
-
-        const chatItem = createChatListItem(chatId, chatTitle);
-        chatList.insertBefore(chatItem, chatList.firstChild);
-
-        switchToChat(chatId);
-        saveChatsToStorage();
-        textarea.focus();
-      }
-
-      // Create chat list item
-      function createChatListItem(chatId, title) {
-        const chatItem = document.createElement("div");
-        chatItem.className = "chat-item";
-        chatItem.setAttribute("data-id", chatId);
-        chatItem.innerHTML = `
-        <span class="title">${title}</span>
-        <span class="delete-chat" onclick="deleteChat('${chatId}', event)">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M18 6L6 18M6 6l12 12"></path>
-            </svg>
-        </span>
-    `;
-
-        chatItem.addEventListener("click", (e) => {
-          if (!e.target.closest(".delete-chat")) {
-            switchToChat(chatId);
-          }
         });
+      });
+      // Sample data - replace with your actual user data
+      const stories = [
+        { username: "Your Story", image: "zzz.jpg", isAdd: true },
+        { username: "mr_elliot", image: "elliot.jpeg", seen: false },
+        { username: "miss_ironi", image: "zzd.jpg", seen: false },
+        { username: "mr_ironi", image: "zzx.jpeg", seen: true },
+        { username: "ronald_bone", image: "100k-ai-faces-6.jpg", seen: true },
+        { username: "im.vengeance", image: "zzv.jpeg", seen: false },
+        { username: "louis_fort", image: "OIP (8).jpeg", seen: true },
+        { username: "linus_linux", image: "linus.jpg", seen: false },
+      ];
 
-        return chatItem;
-      }
+      const storiesWrapper = document.querySelector(".stories-wrapper");
+      const modal = document.querySelector(".story-modal");
+      const modalImage = modal.querySelector(".story-modal-image");
+      const modalUserImage = modal.querySelector(".story-modal-user-image");
+      const modalUsername = modal.querySelector(".story-modal-username");
+      const closeButton = modal.querySelector(".story-modal-close");
+      let currentStoryIndex = 0;
+      let storyTimeout;
 
-      // Switch to chat
-      function switchToChat(chatId) {
-        document.querySelectorAll(".chat-item").forEach((item) => {
-          item.classList.remove("active");
-        });
+      // Create story elements
+      stories.forEach((story, index) => {
+        const storyElement = document.createElement("div");
+        storyElement.className = `story ${story.isAdd ? "add-story" : ""} ${
+          story.seen ? "seen" : ""
+        }`;
 
-        const selectedChat = document.querySelector(
-          `.chat-item[data-id="${chatId}"]`
-        );
-        if (selectedChat) {
-          selectedChat.classList.add("active");
-        }
+        if (story.isAdd) {
+          storyElement.innerHTML = `
+          <div class="story-ring">
+            <img src="${story.image}" alt="Add story" class="story-image">
+          </div>
+          <div class="add-button">+</div>
+          <div class="story-username">${story.username}</div>
+        `;
 
-        currentChatId = chatId;
-        const chat = chats[chatId];
-
-        currentChatTitle.textContent = chat.title;
-        chatContainer.innerHTML = "";
-
-        if (chat.messages && chat.messages.length > 0) {
-          chat.messages.forEach((msg) => {
-            addMessage(msg.content, msg.role);
+          storyElement.addEventListener("click", () => {
+            alert("Add story feature would open here");
           });
         } else {
-          chatContainer.innerHTML = `
-            <div class="empty-state">
-                <h2>Start a New Conversation</h2>
-                <p>Type your message below to begin chatting.</p>
-            </div>
+          storyElement.innerHTML = `
+          <div class="story-ring">
+            <img 
+              src="${story.image}" 
+              alt="${story.username}'s story" 
+              class="story-image"
+              loading="lazy"
+            >
+          </div>
+          <div class="story-username">${story.username}</div>
         `;
-        }
 
-        if (window.innerWidth <= 768) {
-          sidebar.classList.remove("active");
-        }
-
-        textarea.focus();
-      }
-
-      // Delete chat
-      function deleteChat(chatId, event) {
-        event.stopPropagation();
-
-        if (confirm("Are you sure you want to delete this chat?")) {
-          delete chats[chatId];
-          updateChatList();
-
-          if (currentChatId === chatId) {
-            const remainingChats = Object.keys(chats);
-            if (remainingChats.length > 0) {
-              switchToChat(remainingChats[0]);
-            } else {
-              createNewChat();
-            }
-          }
-
-          saveChatsToStorage();
-        }
-      }
-
-      // Update chat list
-      function updateChatList() {
-        chatList.innerHTML = "";
-        Object.values(chats)
-          .sort((a, b) => b.id.localeCompare(a.id))
-          .forEach((chat) => {
-            const chatItem = createChatListItem(chat.id, chat.title);
-            if (chat.id === currentChatId) {
-              chatItem.classList.add("active");
-            }
-            chatList.appendChild(chatItem);
+          storyElement.addEventListener("click", () => {
+            openStory(index);
           });
+        }
+
+        storiesWrapper.appendChild(storyElement);
+      });
+
+      // Story viewing functionality
+      function openStory(index) {
+        currentStoryIndex = index;
+        const story = stories[index];
+
+        modalImage.src = story.image;
+        modalUserImage.src = story.image;
+        modalUsername.textContent = story.username;
+        modal.style.display = "flex";
+        document.body.style.overflow = "hidden";
+
+        // Add timer segments
+        const timerContainer = modal.querySelector(".story-timer");
+        timerContainer.innerHTML = "";
+        for (let i = 0; i < 5; i++) {
+          const segment = document.createElement("div");
+          segment.className = `timer-segment ${i === 0 ? "active" : ""}`;
+          timerContainer.appendChild(segment);
+        }
+
+        startStoryTimer();
       }
 
-      // Save chats to local storage
-      function saveChatsToStorage() {
-        localStorage.setItem("fangels_chats", JSON.stringify(chats));
-      }
+      function startStoryTimer() {
+        clearTimeout(storyTimeout);
+        const segments = modal.querySelectorAll(".timer-segment");
+        let currentSegment = 0;
 
-      // Load chats from local storage
-      function loadChatsFromStorage() {
-        const savedChats = localStorage.getItem("fangels_chats");
-        if (savedChats) {
-          chats = JSON.parse(savedChats);
-          updateChatList();
-
-          const chatIds = Object.keys(chats);
-          if (chatIds.length > 0) {
-            switchToChat(chatIds[0]);
+        function activateSegment() {
+          if (currentSegment >= segments.length) {
+            nextStory();
+            return;
           }
+
+          segments[currentSegment].classList.add("active");
+          currentSegment++;
+          storyTimeout = setTimeout(activateSegment, 2000);
+        }
+
+        activateSegment();
+      }
+
+      function nextStory() {
+        if (currentStoryIndex < stories.length - 1) {
+          openStory(currentStoryIndex + 1);
+        } else {
+          closeModal();
         }
       }
 
-      // Textarea auto-resize
-      textarea.addEventListener("input", function () {
-        this.style.height = "auto";
-        this.style.height = this.scrollHeight + "px";
-      });
+      function previousStory() {
+        if (currentStoryIndex > 1) {
+          openStory(currentStoryIndex - 1);
+        }
+      }
+
+      function closeModal() {
+        modal.style.display = "none";
+        document.body.style.overflow = "";
+        clearTimeout(storyTimeout);
+      }
 
       // Event listeners
-      sendButton.addEventListener("click", sendMessage);
-
-      textarea.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-          e.preventDefault();
-          sendMessage();
-        }
+      closeButton.addEventListener("click", closeModal);
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) closeModal();
       });
 
-      newChatBtn.addEventListener("click", createNewChat);
-
-      // Close sidebar when clicking outside on mobile
-      document.addEventListener("click", (e) => {
-        if (
-          window.innerWidth <= 768 &&
-          !sidebar.contains(e.target) &&
-          !menuToggle.contains(e.target) &&
-          sidebar.classList.contains("active")
-        ) {
-          sidebar.classList.remove("active");
-        }
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+        if (e.key === "ArrowRight") nextStory();
+        if (e.key === "ArrowLeft") previousStory();
       });
 
-      // Handle window resize
-      window.addEventListener("resize", () => {
-        if (window.innerWidth > 768) {
-          sidebar.classList.remove("active");
-        }
+      // Touch events for story navigation
+      let touchStartX = 0;
+      modalImage.addEventListener("touchstart", (e) => {
+        touchStartX = e.touches[0].clientX;
       });
 
-      // Initialize
-      window.addEventListener("load", () => {
-        loadChatsFromStorage();
-        if (Object.keys(chats).length === 0) {
-          createNewChat();
+      modalImage.addEventListener("touchend", (e) => {
+        const touchEndX = e.changedTouches[0].clientX;
+        const diff = touchStartX - touchEndX;
+
+        if (Math.abs(diff) > 50) {
+          if (diff > 0) {
+            nextStory();
+          } else {
+            previousStory();
+          }
         }
-        textarea.focus();
+      });
+      let selectedMedia = null;
+      let posts = [];
+
+      // Media input handling
+      document
+        .getElementById("photoInput")
+        .addEventListener("change", handleMediaInput);
+      document
+        .getElementById("videoInput")
+        .addEventListener("change", handleMediaInput);
+
+      function handleMediaInput(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const isVideo = event.target.id === "videoInput";
+        const previewContainer = document.getElementById(
+          "mediaPreviewContainer"
+        );
+        const imagePreview = document.getElementById("imagePreview");
+        const videoPreview = document.getElementById("videoPreview");
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          selectedMedia = {
+            dataUrl: e.target.result,
+            type: isVideo ? "video" : "image",
+          };
+
+          previewContainer.classList.remove("hidden");
+          if (isVideo) {
+            imagePreview.classList.add("hidden");
+            videoPreview.classList.remove("hidden");
+            videoPreview.src = e.target.result;
+          } else {
+            videoPreview.classList.add("hidden");
+            imagePreview.classList.remove("hidden");
+            imagePreview.src = e.target.result;
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+
+      // Post creation
+      document
+        .getElementById("postButton")
+        .addEventListener("click", createPost);
+
+      function createPost() {
+        const content = document.getElementById("postContent").value.trim();
+        if (!content && !selectedMedia) return;
+
+        const post = {
+          id: Date.now(),
+          content: content,
+          timestamp: new Date(),
+          media: selectedMedia,
+          likes: 0,
+          comments: 0,
+        };
+
+        posts.unshift(post);
+        renderPosts();
+        resetForm();
+      }
+
+      function resetForm() {
+        document.getElementById("postContent").value = "";
+        document
+          .getElementById("mediaPreviewContainer")
+          .classList.add("hidden");
+        document.getElementById("imagePreview").classList.add("hidden");
+        document.getElementById("videoPreview").classList.add("hidden");
+        selectedMedia = null;
+        document.getElementById("photoInput").value = "";
+        document.getElementById("videoInput").value = "";
+      }
+
+      function formatTimestamp(timestamp) {
+        const minutes = Math.floor((Date.now() - timestamp) / 60000);
+        if (minutes < 60) return `${minutes}m ago`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours}h ago`;
+        return `${Math.floor(hours / 24)}d ago`;
+      }
+
+      function renderPosts() {
+        const container = document.getElementById("postsContainer");
+        container.innerHTML = posts
+          .map(
+            (post) => `
+            <div class="bg-white rounded-lg shadow">
+                <div class="p-4">
+                    <div class="flex justify-between items-start">
+                        <div class="flex space-x-3">
+                            <img src="/api/placeholder/40/40" alt="Profile" class="w-10 h-10 rounded-full">
+                            <div>
+                                <h4 class="font-semibold">AL FANGKY</h4>
+                                <p class="text-sm text-gray-500">${formatTimestamp(
+                                  post.timestamp
+                                )}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mt-4">${post.content}</p>
+                    ${post.media ? renderMedia(post.media) : ""}
+                    <div class="mt-4 flex justify-between items-center border-t pt-4">
+                        <button class="post-interaction flex items-center space-x-2" onclick="toggleLike(${
+                          post.id
+                        })">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                            </svg>
+                            <span>${post.likes}</span>
+                        </button>
+                        <button class="post-interaction flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18z"/>
+                            </svg>
+                            <span>${post.comments}</span>
+                        </button>
+                        <button class="post-interaction flex items-center space-x-2">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                            </svg>
+                            <span>Share</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `
+          )
+          .join("");
+      }
+
+      function renderMedia(media) {
+        if (media.type === "video") {
+          return `<video src="${media.dataUrl}" class="mt-4 w-full rounded-lg" controls></video>`;
+        } else {
+          return `<img src="${media.dataUrl}" alt="Post image" class="mt-4 w-full rounded-lg">`;
+        }
+      }
+
+      function toggleLike(postId) {
+        const post = posts.find((p) => p.id === postId);
+        if (post) {
+          post.likes += 1;
+          renderPosts();
+        }
+      }
+
+      // Initial render
+      renderPosts();
+
+      // Toggle mobile menu
+      const menuButton = document.querySelector('[aria-label="Menu"]');
+      const mobileMenu = document.querySelector(".mobile-menu");
+
+      if (menuButton && mobileMenu) {
+        menuButton.addEventListener("click", () => {
+          mobileMenu.classList.toggle("hidden");
+        });
+      }
+
+      // Post form functionality
+      const postForm = document.querySelector("textarea");
+      const postButton = document.querySelector('button:contains("Post")');
+
+      if (postForm && postButton) {
+        postButton.addEventListener("click", () => {
+          const content = postForm.value.trim();
+          if (content) {
+            // Here you would typically send the post to your backend
+            console.log("Posting:", content);
+            postForm.value = "";
+          }
+        });
+      }
+
+      // Like button functionality
+      const likeButtons = document.querySelectorAll(".post-interaction");
+
+      likeButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+          this.classList.toggle("text-blue-600");
+        });
       });
 
-      // Add additional styles
-      const additionalStyles = `
-    @media (max-width: 768px) {
-        .sidebar {
-            position: fixed;
-            z-index: 1000;
-            background: white;
-            width: 100%;
-            max-width: 280px;
-        }
-        
-        .menu-toggle {
-            z-index: 1001;
-        }
-        
-        .main-content {
-            width: 100%;
-        }
-    }
+      // Follow button functionality
+      const followButtons = document.querySelectorAll(
+        'button:contains("Follow")'
+      );
 
-    .message .content img {
-        max-width: 100%;
-        height: auto;
-    }
-`;
-
-      const styleElement = document.createElement("style");
-      styleElement.textContent = additionalStyles;
-      document.head.appendChild(styleElement);
+      followButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+          const isFollowing = this.textContent.trim() === "Following";
+          this.textContent = isFollowing ? "Follow" : "Following";
+          this.classList.toggle("bg-gray-200");
+          this.classList.toggle("text-gray-800");
+          this.classList.toggle("bg-blue-600");
+          this.classList.toggle("text-white");
+        });
+      });
     </script>
   </body>
 </html>
